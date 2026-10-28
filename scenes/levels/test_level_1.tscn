@@ -4,7 +4,7 @@
 [ext_resource type="TileSet" uid="uid://cq665s6lulasr" path="res://assets/tilesets/tile_set_grass.tres" id="2_vbfgb"]
 [ext_resource type="TileSet" uid="uid://cbtn6xn4qvx4c" path="res://assets/tilesets/tile_set_fence.tres" id="3_lxfn4"]
 [ext_resource type="PackedScene" uid="uid://c4gd52n3bbjao" path="res://scenes/entities/player.tscn" id="4_e2q1c"]
-[ext_resource type="PackedScene" uid="uid://bfsks7q0vfrxl" path="res://scenes/hud.tscn" id="5_ruqf1"]
+[ext_resource type="PackedScene" uid="uid://bfsks7q0vfrxl" path="res://scenes/ui/hud.tscn" id="5_ruqf1"]
 [ext_resource type="Script" uid="uid://bqbhyrov37xfm" path="res://scenes/scripts/exit_zone.gd" id="6_ckkav"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oc4kc"]

@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3]
-
-[ext_resource type="PackedScene" path="res://addons/map_creator/preview/map_preview.tscn" id="1_preview"]
-[ext_resource type="Resource" path="res://assets/tilesets/fence_wall_mapping.tres" id="2_mapping"]
-
-[node name="MapCreatorPreview" instance=ExtResource("1_preview")]
-wall_mapping = ExtResource("2_mapping")
-generated_level_scene_path = "res://scenes/levels/generated_level.tscn"
-generated_scene_dir = "res://scenes/levels/generated"

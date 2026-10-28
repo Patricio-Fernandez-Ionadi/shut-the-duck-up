@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="MapCreatorConfig" format=3 uid="uid://boj55bhicd8n6"]
-
-[ext_resource type="Script" uid="uid://bys4rb77eo6ir" path="res://addons/map_creator/core/map_creator_config.gd" id="1_config"]
-
-[resource]
-script = ExtResource("1_config")
-room_count = 15
-room_min_size = Vector2i(12, 12)
-room_max_size = Vector2i(20, 20)

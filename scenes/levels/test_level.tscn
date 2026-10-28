@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bp7ykn6mccedm" path="res://scenes/entities/guard.tscn" id="4_hfwtw"]
 [ext_resource type="Script" uid="uid://bqbhyrov37xfm" path="res://scenes/scripts/exit_zone.gd" id="5_2mu0v"]
 [ext_resource type="PackedScene" path="res://scenes/objects/pickup.tscn" id="6_jmx14"]
-[ext_resource type="PackedScene" uid="uid://bfsks7q0vfrxl" path="res://scenes/hud.tscn" id="7_cyt5c"]
+[ext_resource type="PackedScene" uid="uid://bfsks7q0vfrxl" path="res://scenes/ui/hud.tscn" id="7_cyt5c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eaa0b"]
 size = Vector2(44, 70)
