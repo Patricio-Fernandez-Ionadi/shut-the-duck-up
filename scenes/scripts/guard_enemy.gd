@@ -146,7 +146,7 @@ func _update_awareness(delta: float, can_see: bool) -> void:
 				awareness - detection_decay_rate * delta
 			)
 
-func _process_patrol(delta: float, _can_see: bool) -> void:
+func _process_patrol(_delta: float, _can_see: bool) -> void:
 	if awareness >= suspicion_threshold:
 		state = GuardState.SUSPICIOUS
 		velocity = Vector2.ZERO
@@ -313,14 +313,14 @@ func _on_noise_emitted(
 
 func _on_alarm_changed(
 	active: bool,
-	position: Vector2,
+	pos: Vector2,
 	_time_left: float
 ) -> void:
 	# La alarma global hace converger a los guardias que no están persiguiendo.
 	if not alive or not active or state == GuardState.CHASE:
 		return
 
-	investigate_target = position
+	investigate_target = pos
 	_search_timer = 8.0
 	state = GuardState.INVESTIGATE
 

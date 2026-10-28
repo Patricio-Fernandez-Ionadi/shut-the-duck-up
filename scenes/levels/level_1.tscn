@@ -1,8 +1,8 @@
 [gd_scene format=4 uid="uid://bp12njefntoor"]
 
-[ext_resource type="TileSet" uid="uid://bh4733nteayqu" path="res://assets/tilesets/tile_set_dirt_grass.tres" id="1_ksju7"]
-[ext_resource type="TileSet" uid="uid://diasqdhpwn28b" path="res://assets/tilesets/tile_set_fence.tres" id="2_6iamk"]
-[ext_resource type="TileSet" uid="uid://db2i5y4tgni65" path="res://assets/tilesets/tile_set_grass.tres" id="2_nsrm0"]
+[ext_resource type="TileSet" uid="uid://da0s3f4pt3y5y" path="res://assets/tilesets/tile_set_dirt_grass.tres" id="1_ksju7"]
+[ext_resource type="TileSet" uid="uid://cbtn6xn4qvx4c" path="res://assets/tilesets/tile_set_fence.tres" id="2_6iamk"]
+[ext_resource type="TileSet" uid="uid://cq665s6lulasr" path="res://assets/tilesets/tile_set_grass.tres" id="2_nsrm0"]
 [ext_resource type="PackedScene" uid="uid://c4gd52n3bbjao" path="res://scenes/entities/player.tscn" id="4_x42e6"]
 [ext_resource type="PackedScene" uid="uid://bfsks7q0vfrxl" path="res://scenes/hud.tscn" id="5_6761a"]
 [ext_resource type="Script" uid="uid://bqbhyrov37xfm" path="res://scenes/scripts/exit_zone.gd" id="6_sk5k4"]
