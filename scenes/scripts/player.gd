@@ -17,6 +17,8 @@
 extends CharacterBody2D
 class_name PlayerCharacter
 
+signal shot_hit
+
 # --- Configuración ajustable desde el Inspector ---
 @export var walk_speed: float = 175.0
 @export var sprint_speed: float = 255.0
@@ -29,6 +31,10 @@ class_name PlayerCharacter
 @export var reload_time: float = 1.4
 @export var takedown_range: float = 42.0
 @export var throw_range: float = 380.0
+@export var recoil_per_shot: float = 6.0
+@export var max_aim_spread: float = 24.0
+@export var spread_recovery: float = 10.0
+@export var max_spread_angle_degrees: float = 6.0
 
 # --- Referencias a nodos hijos ---
 @onready var duck: Duck = $Duck
@@ -46,11 +52,14 @@ var status_message := "Llegá a la salida. E intentá que el pato no grazne."
 var _shot_cooldown := 0.0              # Segundos restantes antes de poder disparar.
 var _reload_timer := 0.0               # Tiempo restante de recarga.
 var _footstep_timer := 0.0             # Temporizador de pasos audibles al correr.
-var _custom_cursor_active := false     # True si el cursor personalizado está puesto.
+var _cursor_hidden := false            # True si ocultamos el cursor del sistema.
 
-# Feedback de apuntado: línea guía en el mundo y textura del cursor.
+# Feedback de apuntado: apertura de la mira y objetivo bajo el cursor.
+var aim_spread := 0.0                  # Pérdida de precisión acumulada (px).
+var aim_target_hostile := false        # True si la mira está sobre un guardia.
+
+# Feedback de apuntado: línea guía en el mundo.
 const AIM_LINE_COLOR := Color(0.55, 0.9, 1.0, 0.55)
-const CROSSHAIR_TEXTURE := preload("res://assets/crosshair_64x.png")
 const BOTTLE_SCENE := preload("res://scenes/objects/bottle.tscn")
 
 func _ready() -> void:
@@ -84,14 +93,8 @@ func _physics_process(delta: float) -> void:
 	elif input_direction.length_squared() > 0.01:
 		facing_direction = input_direction.normalized()
 
-	# 4) Cambiar el cursor por la mira solo mientras se apunta.
-	if is_aiming != _custom_cursor_active:
-		_custom_cursor_active = is_aiming
-		Input.set_custom_mouse_cursor(
-			CROSSHAIR_TEXTURE if is_aiming else null,
-			Input.CURSOR_ARROW,
-			Vector2(32, 32)
-		)
+	# 4) La mira se dibuja en el HUD; acá ocultamos el cursor solo al apuntar.
+	_update_aim_feedback(delta)
 
 	# 5) Postura y velocidad: agacharse da sigilo; Shift corre (pero hace ruido).
 	var is_moving := input_direction.length_squared() > 0.01
@@ -155,6 +158,51 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("throw_item"):
 		_throw_bottle()
 
+func _update_aim_feedback(delta: float) -> void:
+	# La precisión se recupera sola cuando dejás de disparar.
+	aim_spread = maxf(0.0, aim_spread - spread_recovery * delta)
+
+	# El cursor del sistema solo se oculta mientras la mira lo reemplaza.
+	var want_hidden := is_aiming and not GameState.is_complete()
+
+	if want_hidden != _cursor_hidden:
+		_cursor_hidden = want_hidden
+		Input.set_mouse_mode(
+			Input.MOUSE_MODE_HIDDEN if want_hidden else Input.MOUSE_MODE_VISIBLE
+		)
+
+	if not is_aiming:
+		aim_target_hostile = false
+		return
+
+	var hit := _aim_hit()
+	aim_target_hostile = false
+
+	if not hit.is_empty():
+		var target: Object = hit.get("collider")
+
+		if target is GuardEnemy:
+			var guard := target as GuardEnemy
+			aim_target_hostile = guard.alive
+
+func _aim_distance() -> float:
+	# Con el cursor como mira, el disparo no supera el cursor.
+	if is_aiming:
+		return minf(
+			shot_range,
+			global_position.distance_to(get_global_mouse_position())
+		)
+	return shot_range
+
+func _aim_hit() -> Dictionary:
+	var query := PhysicsRayQueryParameters2D.create(
+		global_position,
+		global_position + _aim_direction() * _aim_distance()
+	)
+	query.exclude = [get_rid()]
+
+	return get_world_2d().direct_space_state.intersect_ray(query)
+
 func _aim_direction() -> Vector2:
 	# Devuelve la dirección de apuntado actual.
 	# - Apuntando: recalcula hacia el cursor para que el disparo sea exacto
@@ -195,21 +243,24 @@ func _shot() -> void:
 		+ "a todos los guardias cercanos."
 	)
 
-	# Dirección efectiva del disparo (cursor si se está apuntando).
-	facing_direction = _aim_direction()
+	# Dirección efectiva del disparo con desvío por pérdida de precisión.
+	var spread_ratio := clampf(
+		aim_spread / maxf(0.001, max_aim_spread),
+		0.0,
+		1.0
+	)
+	var max_deviation := deg_to_rad(max_spread_angle_degrees) * spread_ratio
+	var shot_direction := _aim_direction().rotated(
+		randf_range(-max_deviation, max_deviation)
+	)
 
 	# Alcance: con el cursor como mira, el disparo no supera el cursor.
-	var distance := shot_range
-	if is_aiming:
-		distance = minf(
-			shot_range,
-			global_position.distance_to(get_global_mouse_position())
-		)
+	var distance := _aim_distance()
 
 	# Raycast contra el mundo; excluye el propio jugador.
 	var query := PhysicsRayQueryParameters2D.create(
 		global_position,
-		global_position + facing_direction * distance
+		global_position + shot_direction * distance
 	)
 	query.exclude = [get_rid()]
 
@@ -220,7 +271,13 @@ func _shot() -> void:
 
 		# Comunica el impacto al guardia alcanzado.
 		if target is GuardEnemy:
-			target.take_hit()
+			var guard := target as GuardEnemy
+			if guard.alive:
+				guard.take_hit()
+				shot_hit.emit()
+
+	# El disparo abre la mira; se recupera sola con el tiempo.
+	aim_spread = minf(max_aim_spread, aim_spread + recoil_per_shot)
 
 	if ammo <= 0:
 		_start_reload()
@@ -316,8 +373,8 @@ func _throw_bottle() -> void:
 
 func _exit_tree() -> void:
 	# Restaura el cursor si el nodo se elimina mientras se apuntaba.
-	if _custom_cursor_active:
-		Input.set_custom_mouse_cursor(null)
+	if _cursor_hidden:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _draw() -> void:
 	# --- Gráfico provisional del personaje ---
@@ -342,7 +399,7 @@ func _draw() -> void:
 	)
 
 	# Línea guía desde el jugador hasta el alcance efectivo del disparo;
-	# la mira en sí es el cursor personalizado (assets/crosshair_64x.png).
+	# la mira se dibuja aparte en el HUD (scenes/ui/crosshair.tscn).
 	draw_line(
 		Vector2.ZERO,
 		facing_direction * aim_distance,

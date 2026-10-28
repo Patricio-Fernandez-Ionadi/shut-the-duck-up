@@ -23,6 +23,7 @@ class_name GameHUD
 @onready var bottles_label: Label = $Root/BottomRight/Bottles
 @onready var controls_label: Label = $Root/BottomRight/Controls
 @onready var prompt_label: Label = $Root/Prompt
+@onready var crosshair: Crosshair = $Root/Crosshair
 @onready var results_root: Control = $Root/Results
 @onready var results_title: Label = $Root/Results/Center/Panel/Margin/VBox/ResultsTitle
 @onready var results_details: Label = $Root/Results/Center/Panel/Margin/VBox/ResultsDetails
@@ -56,15 +57,32 @@ func _exit_tree() -> void:
 		GameState.mission_completed.disconnect(_on_mission_completed)
 	if GameState.run_reset.is_connected(_on_run_reset):
 		GameState.run_reset.disconnect(_on_run_reset)
+	if (
+		is_instance_valid(crosshair)
+		and is_instance_valid(player)
+		and player.shot_hit.is_connected(crosshair.flash_hit)
+	):
+		player.shot_hit.disconnect(crosshair.flash_hit)
 
 func bind(player_ref: PlayerCharacter, duck_ref: Duck) -> void:
+	if (
+		is_instance_valid(crosshair)
+		and is_instance_valid(player)
+		and player.shot_hit.is_connected(crosshair.flash_hit)
+	):
+		player.shot_hit.disconnect(crosshair.flash_hit)
+
 	player = player_ref
 	duck = duck_ref
+
+	if player != null and not player.shot_hit.is_connected(crosshair.flash_hit):
+		player.shot_hit.connect(crosshair.flash_hit)
 
 func _process(delta: float) -> void:
 	if player == null or duck == null:
 		return
 
+	_update_crosshair()
 	_update_agitation()
 	_update_objective()
 	_update_status(delta)
@@ -95,6 +113,17 @@ func set_ammo(current: int, reserve: int, reloading: bool = false) -> void:
 func set_bottles(count: int) -> void:
 	bottles_label.visible = true
 	bottles_label.text = "Botellas: %d" % count
+
+func _update_crosshair() -> void:
+	# El panel de resultados tapa la mira y devuelve el cursor del sistema.
+	if GameState.is_complete():
+		crosshair.reset()
+		return
+
+	crosshair.set_aiming(player.is_aiming)
+	crosshair.set_spread(player.aim_spread)
+	crosshair.set_target_hostile(player.aim_target_hostile)
+	crosshair.set_reloading(player.is_reloading)
 
 func _update_status(delta: float) -> void:
 	# Un mensaje temporal (ruido/disparo) tapa el estado normal del jugador.
@@ -134,6 +163,7 @@ func _on_alarm_changed(active: bool, _position: Vector2, time_left: float) -> vo
 
 func _on_mission_completed(results: Dictionary) -> void:
 	prompt_label.text = ""
+	crosshair.reset()
 	results_root.visible = true
 	results_title.text = "MISIÓN COMPLETA"
 
@@ -165,6 +195,7 @@ func _on_run_reset() -> void:
 	results_root.visible = false
 	alert_banner.visible = false
 	prompt_label.text = ""
+	crosshair.reset()
 	_status_timer = 0.0
 	status_label.text = ""
 

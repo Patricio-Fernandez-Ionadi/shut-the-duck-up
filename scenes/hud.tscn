@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bfsks7q0vfrxl"]
 
 [ext_resource type="Script" uid="uid://chyfryq5lcttl" path="res://scenes/scripts/hud.gd" id="1_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/crosshair.tscn" id="2_crosshair"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1181515147]
 script = ExtResource("1_hud")
@@ -136,6 +137,12 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0.75, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
+
+[node name="Crosshair" parent="Root" instance=ExtResource("2_crosshair")]
+layout_mode = 1
+anchors_preset = 0
+offset_right = 0.0
+offset_bottom = 0.0
 
 [node name="Results" type="Control" parent="Root" unique_id=2097636720]
 visible = false
