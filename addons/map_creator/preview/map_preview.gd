@@ -3,67 +3,186 @@ class_name MapCreatorPreview
 
 @export var config: MapCreatorConfig
 @export var generate_on_ready: bool = true
+@export var resize_window_on_ready: bool = true
+@export var window_size_ratio: Vector2 = Vector2(0.8, 0.8)
+@export var window_margin: int = 40
+@export var panel_width_ratio: float = 0.2
+@export var panel_min_width: float = 300.0
+@export var panel_max_width: float = 480.0
+@export var panel_margin: float = 16.0
 
 var layout: MapCreatorLayout
 
-@onready var camera: Camera2D = $Camera2D
+var _working_config: MapCreatorConfig
+var _panel_width: float = 0.0
+
+@onready var camera: MapCreatorCameraController = $Camera2D
 @onready var info_label: Label = $UI/Info
+@onready var panel: MapCreatorPreviewPanel = $UI/Panel
 
 func _ready() -> void:
 	if config == null:
 		config = MapCreatorConfig.new()
 
-	if generate_on_ready:
-		regenerate()
+	_working_config = config.duplicate(true) as MapCreatorConfig
+	if _working_config == null:
+		_working_config = config.sanitized_copy()
 
-	get_viewport().size_changed.connect(_frame_camera)
+	_setup_window()
+	panel.generate_requested.connect(_on_generate_requested)
+	panel.new_seed_requested.connect(_on_new_seed_requested)
+	panel.fit_requested.connect(_on_fit_requested)
+	get_viewport().size_changed.connect(_on_viewport_resized)
+	panel.bind_config(_working_config)
+	_update_panel_layout()
+
+	await get_tree().process_frame
+	_update_panel_layout()
+
+	if generate_on_ready:
+		_generate()
 
 func regenerate() -> void:
-	var generator := MapCreatorGenerator.new()
-	layout = generator.generate(config)
+	_generate()
 
-	if info_label != null:
-		var errors := layout.validate()
-		var status := "OK"
-		if not errors.is_empty():
-			status = "%d errores" % errors.size()
-			for error in errors:
-				push_warning(error)
-
-		info_label.text = (
-			"Map Creator — seed %d · rooms %d · corridors %d · "
-			+ "bounds %dx%d tiles · %s"
-		) % [
-			layout.layout_seed,
-			layout.rooms.size(),
-			layout.corridors.size(),
-			layout.bounds_tiles.size.x,
-			layout.bounds_tiles.size.y,
-			status,
-		]
-
-	_frame_camera()
-	queue_redraw()
-
-func _frame_camera() -> void:
-	if layout == null or camera == null:
+func _setup_window() -> void:
+	if not resize_window_on_ready:
+		return
+	if DisplayServer.get_name() == "headless":
 		return
 
-	var bounds := layout.bounds_px
-	if bounds.size.x <= 0.0 or bounds.size.y <= 0.0:
+	var screen := DisplayServer.window_get_current_screen()
+	var usable := DisplayServer.screen_get_usable_rect(screen)
+	if usable.size.x <= 0 or usable.size.y <= 0:
+		return
+
+	var target := Vector2i(
+		int(float(usable.size.x) * clampf(window_size_ratio.x, 0.3, 1.0)),
+		int(float(usable.size.y) * clampf(window_size_ratio.y, 0.3, 1.0))
+	)
+	target.x = mini(target.x, maxi(1, usable.size.x - window_margin))
+	target.y = mini(target.y, maxi(1, usable.size.y - window_margin))
+
+	var window := get_window()
+	window.size = target
+	window.position = usable.position + (usable.size - target) / 2
+
+func _generate() -> void:
+	if _working_config == null:
+		return
+
+	_working_config = _working_config.sanitized_copy()
+
+	var generator := MapCreatorGenerator.new()
+	layout = generator.generate(_working_config)
+	_working_config.layout_seed = layout.layout_seed
+
+	panel.bind_config(_working_config)
+	_update_panel_layout()
+	_update_info()
+	_fit_camera()
+	queue_redraw()
+
+func _update_info() -> void:
+	if layout == null or info_label == null:
+		return
+
+	var errors := layout.validate()
+	var status := "OK"
+	if not errors.is_empty():
+		status = "%d errores" % errors.size()
+		for error in errors:
+			push_warning(error)
+
+	info_label.text = (
+		"Map Creator — seed %d · rooms %d · corridors %d · "
+		+ "bounds %dx%d tiles · %s"
+	) % [
+		layout.layout_seed,
+		layout.rooms.size(),
+		layout.corridors.size(),
+		layout.bounds_tiles.size.x,
+		layout.bounds_tiles.size.y,
+		status,
+	]
+
+	var embedded_note := ""
+	if get_window().is_embedded():
+		embedded_note = (
+			"\nVentana embebida: desactivá Embed Game para usar el tamaño configurado."
+		)
+
+	if errors.is_empty():
+		panel.set_status("Layout válido." + embedded_note)
+		return
+
+	var visible_errors := PackedStringArray()
+	for i in range(mini(3, errors.size())):
+		visible_errors.append(errors[i])
+	panel.set_status("\n".join(visible_errors) + embedded_note, true)
+
+func _update_panel_layout() -> void:
+	if panel == null:
 		return
 
 	var viewport_size := get_viewport_rect().size
-	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+	if viewport_size.x <= 0.0:
 		return
 
-	var fit := minf(
-		viewport_size.x / bounds.size.x,
-		viewport_size.y / bounds.size.y
-	) * 0.9
+	var total_width := clampf(
+		viewport_size.x * panel_width_ratio,
+		panel_min_width + panel_margin,
+		panel_max_width + panel_margin
+	)
+	_panel_width = maxf(panel_min_width, total_width - panel_margin)
+	panel.offset_left = -(_panel_width + panel_margin)
+	panel.offset_right = -panel_margin
+	panel.offset_top = panel_margin
+	panel.offset_bottom = -panel_margin
 
-	camera.position = bounds.get_center()
-	camera.zoom = Vector2(fit, fit)
+func _get_map_area() -> Rect2:
+	var viewport_size := get_viewport_rect().size
+	if _panel_width <= 0.0:
+		return Rect2(Vector2.ZERO, viewport_size)
+
+	var map_width := maxf(1.0, viewport_size.x - (_panel_width + panel_margin))
+	return Rect2(Vector2.ZERO, Vector2(map_width, viewport_size.y))
+
+func _fit_camera() -> void:
+	if layout == null or camera == null:
+		return
+
+	camera.set_layout_bounds(layout.bounds_px)
+	camera.set_map_area(_get_map_area())
+	camera.fit()
+
+func _on_generate_requested() -> void:
+	if _working_config == null:
+		return
+	panel.apply_to_config(_working_config)
+	_generate()
+
+func _on_new_seed_requested() -> void:
+	if _working_config == null:
+		return
+
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var new_seed := int(rng.seed)
+	if new_seed == 0:
+		new_seed = 1
+
+	_working_config.layout_seed = new_seed
+	panel.set_seed(new_seed)
+	panel.apply_to_config(_working_config)
+	_generate()
+
+func _on_fit_requested() -> void:
+	_fit_camera()
+
+func _on_viewport_resized() -> void:
+	_update_panel_layout()
+	_fit_camera()
 
 func _draw() -> void:
 	if layout == null:
