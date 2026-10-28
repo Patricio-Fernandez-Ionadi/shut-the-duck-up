@@ -3,6 +3,7 @@ class_name MapCreatorPreview
 
 @export var config: MapCreatorConfig
 @export var generate_on_ready: bool = true
+@export_range(1, 4, 1) var wall_thickness: int = 1
 @export var resize_window_on_ready: bool = true
 @export var window_size_ratio: Vector2 = Vector2(0.8, 0.8)
 @export var window_margin: int = 40
@@ -10,15 +11,25 @@ class_name MapCreatorPreview
 @export var panel_min_width: float = 300.0
 @export var panel_max_width: float = 480.0
 @export var panel_margin: float = 16.0
+@export var wall_mapping: MapCreatorWallTileMapping
+@export var show_wall_tiles: bool = true
+@export var show_wall_masks: bool = false
+@export_file("*.tscn") var generated_level_scene_path: String = ""
+@export_dir var generated_scene_dir: String = ""
 
 var layout: MapCreatorLayout
+var geometry: MapCreatorLayoutGeometry
 
 var _working_config: MapCreatorConfig
 var _panel_width: float = 0.0
+var _wall_stats: Dictionary = {}
 
 @onready var camera: MapCreatorCameraController = $Camera2D
 @onready var info_label: Label = $UI/Info
 @onready var panel: MapCreatorPreviewPanel = $UI/Panel
+@onready var wall_base_layer: TileMapLayer = $WallBase
+@onready var wall_overlay_layer: TileMapLayer = $WallOverlay
+@onready var mask_overlay: MapCreatorPreviewMaskOverlay = $MaskOverlay
 
 func _ready() -> void:
 	if config == null:
@@ -31,9 +42,15 @@ func _ready() -> void:
 	_setup_window()
 	panel.generate_requested.connect(_on_generate_requested)
 	panel.new_seed_requested.connect(_on_new_seed_requested)
+	panel.copy_seed_requested.connect(_on_copy_seed_requested)
 	panel.fit_requested.connect(_on_fit_requested)
+	panel.show_wall_tiles_toggled.connect(_on_show_wall_tiles_toggled)
+	panel.show_wall_masks_toggled.connect(_on_show_wall_masks_toggled)
+	panel.save_scene_requested.connect(_on_save_scene_requested)
 	get_viewport().size_changed.connect(_on_viewport_resized)
 	panel.bind_config(_working_config)
+	panel.set_wall_tiles_visible(show_wall_tiles)
+	panel.set_wall_masks_visible(show_wall_masks)
 	_update_panel_layout()
 
 	await get_tree().process_frame
@@ -77,17 +94,104 @@ func _generate() -> void:
 	layout = generator.generate(_working_config)
 	_working_config.layout_seed = layout.layout_seed
 
+	geometry = MapCreatorLayoutGeometry.new()
+	geometry.build(layout, wall_thickness)
+	_render_walls()
+
 	panel.bind_config(_working_config)
 	_update_panel_layout()
 	_update_info()
 	_fit_camera()
 	queue_redraw()
 
+func _render_walls() -> void:
+	_wall_stats.clear()
+
+	if wall_mapping == null or geometry == null:
+		_clear_wall_layers()
+		_update_mask_overlay()
+		return
+
+	var renderer := MapCreatorWallTileRenderer.new()
+	renderer.setup(
+		wall_mapping,
+		geometry,
+		wall_base_layer,
+		wall_overlay_layer
+	)
+	_wall_stats = renderer.render()
+	wall_base_layer.collision_enabled = false
+	wall_overlay_layer.collision_enabled = false
+	wall_base_layer.visible = show_wall_tiles
+	wall_overlay_layer.visible = show_wall_tiles
+
+	if mask_overlay != null:
+		mask_overlay.geometry = geometry
+		mask_overlay.tile_size = layout.tile_size
+		mask_overlay.wall_masks = renderer.wall_masks
+		mask_overlay.floor_masks = renderer.floor_masks
+		mask_overlay.show_masks = show_wall_masks
+		mask_overlay.queue_redraw()
+
+func _clear_wall_layers() -> void:
+	if wall_base_layer != null:
+		wall_base_layer.clear()
+		wall_base_layer.visible = false
+	if wall_overlay_layer != null:
+		wall_overlay_layer.clear()
+		wall_overlay_layer.visible = false
+
+func _update_mask_overlay() -> void:
+	if mask_overlay == null:
+		return
+	mask_overlay.geometry = geometry
+	if layout != null:
+		mask_overlay.tile_size = layout.tile_size
+	mask_overlay.wall_masks.clear()
+	mask_overlay.floor_masks.clear()
+	mask_overlay.show_masks = show_wall_masks
+	mask_overlay.queue_redraw()
+
 func _update_info() -> void:
 	if layout == null or info_label == null:
 		return
 
 	var errors := layout.validate()
+	var floor_count := 0
+	var wall_count := 0
+	var bounds_tiles := layout.bounds_tiles
+	var wall_run_count := 0
+
+	if geometry != null:
+		errors.append_array(geometry.validate())
+		floor_count = geometry.floor_cells.size()
+		wall_count = geometry.wall_cells.size()
+		bounds_tiles = geometry.bounds_tiles
+		wall_run_count = geometry.wall_runs.size()
+
+	if wall_mapping != null:
+		errors.append_array(wall_mapping.validate())
+
+	var mapping_note := ""
+	if wall_mapping != null and not _wall_stats.is_empty():
+		var stats_wall_count := int(_wall_stats.get("wall_cells", 0))
+		var base_mapped := int(_wall_stats.get("base_mapped", 0))
+		var overlay_mapped := int(_wall_stats.get("overlay_mapped", 0))
+		var base_fallback := int(_wall_stats.get("base_fallback", 0))
+		var overlay_fallback := int(_wall_stats.get("overlay_fallback", 0))
+
+		mapping_note = " · map base %d/%d overlay %d/%d" % [
+			base_mapped,
+			stats_wall_count,
+			overlay_mapped,
+			stats_wall_count,
+		]
+		if base_fallback > 0 or overlay_fallback > 0:
+			mapping_note += " fb %d/%d" % [
+				base_fallback,
+				overlay_fallback,
+			]
+
 	var status := "OK"
 	if not errors.is_empty():
 		status = "%d errores" % errors.size()
@@ -96,14 +200,18 @@ func _update_info() -> void:
 
 	info_label.text = (
 		"Map Creator — seed %d · rooms %d · corridors %d · "
-		+ "bounds %dx%d tiles · %s"
+		+ "floor %d · walls %d (%d runs) · bounds %dx%d tiles · %s%s"
 	) % [
 		layout.layout_seed,
 		layout.rooms.size(),
 		layout.corridors.size(),
-		layout.bounds_tiles.size.x,
-		layout.bounds_tiles.size.y,
+		floor_count,
+		wall_count,
+		wall_run_count,
+		bounds_tiles.size.x,
+		bounds_tiles.size.y,
 		status,
+		mapping_note,
 	]
 
 	var embedded_note := ""
@@ -113,7 +221,20 @@ func _update_info() -> void:
 		)
 
 	if errors.is_empty():
-		panel.set_status("Layout válido." + embedded_note)
+		var status_text := "Geometría válida."
+		if wall_mapping == null:
+			status_text += " Sin mapping de paredes."
+		elif not _wall_stats.is_empty():
+			var stats_wall_count := int(_wall_stats.get("wall_cells", 0))
+			var base_mapped := int(_wall_stats.get("base_mapped", 0))
+			var overlay_mapped := int(_wall_stats.get("overlay_mapped", 0))
+			status_text += " Mapping base %d/%d, overlay %d/%d." % [
+				base_mapped,
+				stats_wall_count,
+				overlay_mapped,
+				stats_wall_count,
+			]
+		panel.set_status(status_text + embedded_note)
 		return
 
 	var visible_errors := PackedStringArray()
@@ -152,7 +273,11 @@ func _fit_camera() -> void:
 	if layout == null or camera == null:
 		return
 
-	camera.set_layout_bounds(layout.bounds_px)
+	var bounds := layout.bounds_px
+	if geometry != null:
+		bounds = geometry.bounds_px
+
+	camera.set_layout_bounds(bounds)
 	camera.set_map_area(_get_map_area())
 	camera.fit()
 
@@ -177,8 +302,129 @@ func _on_new_seed_requested() -> void:
 	panel.apply_to_config(_working_config)
 	_generate()
 
+func _on_copy_seed_requested() -> void:
+	if layout == null:
+		return
+
+	var seed_text := str(layout.layout_seed)
+	if DisplayServer.get_name() == "headless":
+		panel.set_status("Seed %s (headless: no se copió)." % seed_text)
+		return
+
+	DisplayServer.clipboard_set(seed_text)
+	panel.set_status("Seed %s copiada al portapapeles." % seed_text)
+
 func _on_fit_requested() -> void:
 	_fit_camera()
+
+func _on_show_wall_tiles_toggled(enabled: bool) -> void:
+	show_wall_tiles = enabled
+	if wall_base_layer != null:
+		wall_base_layer.visible = enabled and wall_mapping != null
+	if wall_overlay_layer != null:
+		wall_overlay_layer.visible = enabled and wall_mapping != null
+	queue_redraw()
+
+func _on_show_wall_masks_toggled(enabled: bool) -> void:
+	show_wall_masks = enabled
+	if mask_overlay != null:
+		mask_overlay.show_masks = enabled
+		mask_overlay.queue_redraw()
+
+func _on_save_scene_requested() -> void:
+	if _working_config == null:
+		panel.set_status("No hay configuración para guardar.", true)
+		return
+
+	panel.apply_to_config(_working_config)
+	_generate()
+
+	if layout == null or geometry == null:
+		panel.set_status("No se pudo generar el layout.", true)
+		return
+
+	if (
+		generated_level_scene_path.is_empty()
+		or not ResourceLoader.exists(generated_level_scene_path)
+	):
+		panel.set_status(
+			"No existe la escena base: %s" % generated_level_scene_path,
+			true
+		)
+		return
+
+	var output_dir := generated_scene_dir.strip_edges().trim_suffix("/")
+	if output_dir.is_empty():
+		panel.set_status("Configurá el directorio de escenas.", true)
+		return
+
+	var absolute_dir := ProjectSettings.globalize_path(output_dir)
+	var dir_error := DirAccess.make_dir_recursive_absolute(absolute_dir)
+	if dir_error != OK:
+		panel.set_status(
+			"No se pudo crear %s (error %d)." % [output_dir, dir_error],
+			true
+		)
+		return
+
+	var seed_value := layout.layout_seed
+	var base_name := "seed_%d" % seed_value
+	var config_path := output_dir.path_join(base_name + ".tres")
+	var scene_path := output_dir.path_join(base_name + ".tscn")
+
+	_working_config.layout_seed = seed_value
+	var config_to_save := _working_config.duplicate(true) as MapCreatorConfig
+	if config_to_save == null:
+		config_to_save = _working_config.sanitized_copy()
+
+	var config_error := ResourceSaver.save(config_to_save, config_path)
+	if config_error != OK:
+		panel.set_status(
+			"No se pudo guardar %s (error %d)." % [config_path, config_error],
+			true
+		)
+		return
+
+	var scene_text := _build_seed_scene_text(config_path)
+	var file := FileAccess.open(scene_path, FileAccess.WRITE)
+	if file == null:
+		panel.set_status("No se pudo escribir %s." % scene_path, true)
+		return
+
+	file.store_string(scene_text)
+	file.close()
+	panel.set_status(
+		"Escena guardada: %s\nConfig: %s" % [scene_path, config_path]
+	)
+
+func _build_seed_scene_text(config_path: String) -> String:
+	var ext_resources: Array[String] = []
+	ext_resources.append(
+		'[ext_resource type="PackedScene" path="%s" id="1_level"]'
+		% generated_level_scene_path
+	)
+	ext_resources.append(
+		'[ext_resource type="Resource" path="%s" id="2_config"]'
+		% config_path
+	)
+
+	var mapping_line := ""
+	if wall_mapping != null and not wall_mapping.resource_path.is_empty():
+		ext_resources.append(
+			'[ext_resource type="Resource" path="%s" id="3_mapping"]'
+			% wall_mapping.resource_path
+		)
+		mapping_line = "\nwall_mapping = ExtResource(\"3_mapping\")"
+
+	var text := "[gd_scene load_steps=%d format=3]\n\n" % (
+		ext_resources.size() + 1
+	)
+	text += "\n".join(ext_resources)
+	text += "\n\n[node name=\"Level_1\" instance=ExtResource(\"1_level\")]\n"
+	text += "config = ExtResource(\"2_config\")"
+	text += mapping_line
+	text += "\n"
+	return text
 
 func _on_viewport_resized() -> void:
 	_update_panel_layout()
@@ -190,9 +436,30 @@ func _draw() -> void:
 
 	var tile := Vector2(layout.tile_size)
 	var bounds := layout.bounds_px
+	var bounds_tiles := layout.bounds_tiles
+
+	if geometry != null:
+		bounds = geometry.bounds_px
+		bounds_tiles = geometry.bounds_tiles
 
 	draw_rect(bounds, Color(0.04, 0.05, 0.07, 1.0), true)
-	_draw_grid(bounds, tile)
+	_draw_grid(bounds, tile, bounds_tiles)
+
+	if geometry != null:
+		var draw_placeholder_walls := (
+			not show_wall_tiles
+			or wall_mapping == null
+			or int(_wall_stats.get("base_cells", 0)) == 0
+		)
+
+		if draw_placeholder_walls:
+			var wall_color := Color(0.31, 0.34, 0.36, 1.0)
+			var wall_edge := Color(0.47, 0.51, 0.54, 0.8)
+
+			for run in geometry.wall_runs:
+				var wall_rect := _rect_px(run, tile)
+				draw_rect(wall_rect, wall_color, true)
+				draw_rect(wall_rect, wall_edge, false, 1.0)
 
 	for corridor in layout.corridors:
 		for segment in corridor.segments:
@@ -245,12 +512,16 @@ func _draw() -> void:
 
 	draw_rect(bounds, Color(0.7, 0.8, 1.0, 0.6), false, 2.0)
 
-func _draw_grid(bounds: Rect2, tile: Vector2) -> void:
+func _draw_grid(
+	bounds: Rect2,
+	tile: Vector2,
+	bounds_tiles: Rect2i
+) -> void:
 	var step := 8
 	var color := Color(1.0, 1.0, 1.0, 0.05)
 
-	for x in range(0, layout.bounds_tiles.size.x + 1, step):
-		var px := bounds.position.x + float(x) * tile.x
+	for x in range(bounds_tiles.position.x, bounds_tiles.end.x + 1, step):
+		var px := float(x) * tile.x
 		draw_line(
 			Vector2(px, bounds.position.y),
 			Vector2(px, bounds.end.y),
@@ -258,8 +529,8 @@ func _draw_grid(bounds: Rect2, tile: Vector2) -> void:
 			1.0
 		)
 
-	for y in range(0, layout.bounds_tiles.size.y + 1, step):
-		var py := bounds.position.y + float(y) * tile.y
+	for y in range(bounds_tiles.position.y, bounds_tiles.end.y + 1, step):
+		var py := float(y) * tile.y
 		draw_line(
 			Vector2(bounds.position.x, py),
 			Vector2(bounds.end.x, py),

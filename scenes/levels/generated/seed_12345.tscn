@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/levels/generated_level.tscn" id="1_level"]
+[ext_resource type="Resource" path="res://scenes/levels/generated/seed_12345.tres" id="2_config"]
+[ext_resource type="Resource" path="res://assets/tilesets/fence_wall_mapping.tres" id="3_mapping"]
+
+[node name="Level_1" instance=ExtResource("1_level")]
+config = ExtResource("2_config")
+wall_mapping = ExtResource("3_mapping")

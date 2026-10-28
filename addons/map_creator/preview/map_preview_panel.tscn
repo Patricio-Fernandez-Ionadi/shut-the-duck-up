@@ -66,6 +66,27 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Nueva seed"
 
+[node name="CopySeedButton" type="Button" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Copiar seed"
+
+[node name="WallTilesCheck" type="CheckButton" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Tiles de pared"
+
+[node name="WallMasksCheck" type="CheckButton" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Máscaras"
+
+[node name="SaveSceneButton" type="Button" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Guardar escena"
+
 [node name="Scroll" type="ScrollContainer" parent="Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3

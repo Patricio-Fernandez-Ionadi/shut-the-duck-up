@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="MapCreatorConfig" format=3]
+
+[ext_resource type="Script" path="res://addons/map_creator/core/map_creator_config.gd" id="1_k2bft"]
+
+[resource]
+script = ExtResource("1_k2bft")
+layout_seed = 12345
+room_count = 15
+room_min_size = Vector2i(12, 12)
+room_max_size = Vector2i(20, 20)

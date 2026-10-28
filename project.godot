@@ -11,9 +11,8 @@ config_version=5
 [application]
 
 config/name="ShutTheDuckUp"
-run/main_scene="uid://ba6bggy3koag4"
+run/main_scene="uid://ch0y4utmyromo"
 config/features=PackedStringArray("4.7", "Forward Plus")
-config/icon="res://icon.svg"
 
 [autoload]
 
@@ -106,6 +105,7 @@ toggle_debug={
 
 2d_physics/layer_1="solido"
 2d_physics/layer_2="player"
+2d_physics/layer_3="overlay_fences"
 
 [physics]
 
