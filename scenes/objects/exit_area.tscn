@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://jip8s5w7lgnl"]
+
+[ext_resource type="Script" uid="uid://bqbhyrov37xfm" path="res://scenes/scripts/exit_zone.gd" id="1_nct8y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ahshw"]
+size = Vector2(44, 70)
+
+[node name="Exit" type="Area2D" unique_id=468800205]
+position = Vector2(1700, 500)
+script = ExtResource("1_nct8y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1535040432]
+shape = SubResource("RectangleShape2D_ahshw")
+
+[node name="Visual" type="Polygon2D" parent="." unique_id=1952398480]
+color = Color(0.18, 0.7, 0.4, 0.55)
+polygon = PackedVector2Array(-30, -50, 30, -50, 30, 50, -30, 50)
+
+[node name="Label" type="Label" parent="." unique_id=471959964]
+offset_left = -70.0
+offset_top = -88.0
+offset_right = 70.0
+offset_bottom = -64.0
+theme_override_colors/font_color = Color(0.6, 1, 0.75, 1)
+text = "EXTRACCIÓN"
+horizontal_alignment = 1
