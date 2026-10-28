@@ -1,0 +1,209 @@
+[gd_scene format=3 uid="uid://cnt1fpi7bsdke"]
+
+[ext_resource type="PackedScene" path="res://scenes/objects/wall.tscn" id="1_6xh4u"]
+[ext_resource type="PackedScene" path="res://scenes/objects/crate.tscn" id="2_cyt5c"]
+[ext_resource type="PackedScene" uid="uid://c4gd52n3bbjao" path="res://scenes/entities/player.tscn" id="3_7x1jh"]
+[ext_resource type="PackedScene" uid="uid://bp7ykn6mccedm" path="res://scenes/entities/guard.tscn" id="4_hfwtw"]
+[ext_resource type="Script" uid="uid://bqbhyrov37xfm" path="res://scenes/scripts/exit_zone.gd" id="5_2mu0v"]
+[ext_resource type="PackedScene" path="res://scenes/objects/pickup.tscn" id="6_jmx14"]
+[ext_resource type="PackedScene" uid="uid://bfsks7q0vfrxl" path="res://scenes/hud.tscn" id="7_cyt5c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eaa0b"]
+size = Vector2(44, 70)
+
+[node name="TestLevel" type="Node2D" unique_id=193967066]
+
+[node name="Floor" type="Polygon2D" parent="." unique_id=450972610]
+color = Color(0.1, 0.12, 0.13, 1)
+polygon = PackedVector2Array(0, 0, 1800, 0, 1800, 1000, 0, 1000)
+
+[node name="ZoneInsertion" type="Polygon2D" parent="." unique_id=538680567]
+color = Color(0.135, 0.16, 0.17, 0.75)
+polygon = PackedVector2Array(0, 0, 620, 0, 620, 1000, 0, 1000)
+
+[node name="ZoneCourtyard" type="Polygon2D" parent="." unique_id=2120585141]
+color = Color(0.12, 0.15, 0.16, 0.75)
+polygon = PackedVector2Array(620, 0, 1200, 0, 1200, 1000, 620, 1000)
+
+[node name="ZoneFacility" type="Polygon2D" parent="." unique_id=88024904]
+color = Color(0.15, 0.155, 0.16, 0.75)
+polygon = PackedVector2Array(1200, 0, 1800, 0, 1800, 1000, 1200, 1000)
+
+[node name="ZoneInsertionLabel" type="Label" parent="." unique_id=405201221]
+offset_left = 30.0
+offset_top = 22.0
+offset_right = 400.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(0.75, 0.88, 1, 0.35)
+theme_override_font_sizes/font_size = 16
+text = "ZONA 1 · INSERCIÓN"
+
+[node name="ZoneCourtyardLabel" type="Label" parent="." unique_id=1301320598]
+offset_left = 650.0
+offset_top = 22.0
+offset_right = 1020.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(0.75, 0.88, 1, 0.35)
+theme_override_font_sizes/font_size = 16
+text = "ZONA 2 · PATIO"
+
+[node name="ZoneFacilityLabel" type="Label" parent="." unique_id=331003762]
+offset_left = 1230.0
+offset_top = 22.0
+offset_right = 1600.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(0.75, 0.88, 1, 0.35)
+theme_override_font_sizes/font_size = 16
+text = "ZONA 3 · INSTALACIÓN"
+
+[node name="walls" type="Node2D" parent="." unique_id=1856130047]
+
+[node name="WallTop" parent="walls" unique_id=1584401377 instance=ExtResource("1_6xh4u")]
+position = Vector2(900, 12)
+scale = Vector2(1800, 24)
+
+[node name="WallBottom" parent="walls" unique_id=301930399 instance=ExtResource("1_6xh4u")]
+position = Vector2(900, 988)
+scale = Vector2(1800, 24)
+
+[node name="WallLeft" parent="walls" unique_id=17526900 instance=ExtResource("1_6xh4u")]
+position = Vector2(12, 500)
+scale = Vector2(24, 1000)
+
+[node name="WallRight" parent="walls" unique_id=1238928785 instance=ExtResource("1_6xh4u")]
+position = Vector2(1788, 500)
+scale = Vector2(24, 1000)
+
+[node name="DividerOneTop" parent="walls" unique_id=628217361 instance=ExtResource("1_6xh4u")]
+position = Vector2(620, 215)
+scale = Vector2(24, 430)
+
+[node name="DividerOneBottom" parent="walls" unique_id=2034075925 instance=ExtResource("1_6xh4u")]
+position = Vector2(620, 785)
+scale = Vector2(24, 430)
+
+[node name="DividerTwoTop" parent="walls" unique_id=1450498893 instance=ExtResource("1_6xh4u")]
+position = Vector2(1200, 215)
+scale = Vector2(24, 430)
+
+[node name="DividerTwoBottom" parent="walls" unique_id=1592757975 instance=ExtResource("1_6xh4u")]
+position = Vector2(1200, 785)
+scale = Vector2(24, 430)
+
+[node name="crates" type="Node2D" parent="." unique_id=1871938392]
+
+[node name="CrateInsertionA" parent="crates" unique_id=497221089 instance=ExtResource("2_cyt5c")]
+position = Vector2(250, 350)
+
+[node name="CrateInsertionB" parent="crates" unique_id=1969469115 instance=ExtResource("2_cyt5c")]
+position = Vector2(250, 650)
+
+[node name="CrateInsertionC" parent="crates" unique_id=392482401 instance=ExtResource("2_cyt5c")]
+position = Vector2(520, 860)
+
+[node name="CrateCourtyardCenter" parent="crates" unique_id=1597027571 instance=ExtResource("2_cyt5c")]
+position = Vector2(820, 520)
+
+[node name="CrateCourtyardNorth" parent="crates" unique_id=239382186 instance=ExtResource("2_cyt5c")]
+position = Vector2(980, 360)
+
+[node name="CrateCourtyardSouth" parent="crates" unique_id=414467615 instance=ExtResource("2_cyt5c")]
+position = Vector2(1000, 860)
+
+[node name="CrateCourtyardSouthwest" parent="crates" unique_id=992857936 instance=ExtResource("2_cyt5c")]
+position = Vector2(700, 830)
+
+[node name="CrateFacilityNorth" parent="crates" unique_id=1245610282 instance=ExtResource("2_cyt5c")]
+position = Vector2(1300, 300)
+
+[node name="CrateFacilitySoutheast" parent="crates" unique_id=9934778 instance=ExtResource("2_cyt5c")]
+position = Vector2(1450, 880)
+
+[node name="CrateFacilityNortheast" parent="crates" unique_id=311527332 instance=ExtResource("2_cyt5c")]
+position = Vector2(1650, 220)
+
+[node name="CrateFacilitySouth" parent="crates" unique_id=308206150 instance=ExtResource("2_cyt5c")]
+position = Vector2(1580, 900)
+
+[node name="Player" parent="." unique_id=1825064578 instance=ExtResource("3_7x1jh")]
+position = Vector2(120, 500)
+
+[node name="guards" type="Node2D" parent="." unique_id=1381959599]
+
+[node name="GuardInsertion" parent="guards" unique_id=2124681110 instance=ExtResource("4_hfwtw")]
+position = Vector2(430, 500)
+patrol_points = PackedVector2Array(0, -250, 0, 250)
+
+[node name="GuardCourtyardNorth" parent="guards" unique_id=1417190010 instance=ExtResource("4_hfwtw")]
+position = Vector2(760, 250)
+patrol_points = PackedVector2Array(0, 0, 340, 0)
+
+[node name="GuardCourtyardCenter" parent="guards" unique_id=1005782408 instance=ExtResource("4_hfwtw")]
+position = Vector2(900, 300)
+patrol_points = PackedVector2Array(0, 0, 0, 450, 200, 450, 200, 0)
+
+[node name="GuardCourtyardSouth" parent="guards" unique_id=1599611489 instance=ExtResource("4_hfwtw")]
+position = Vector2(720, 720)
+patrol_points = PackedVector2Array(0, 0, 350, 0, 350, -280, 0, -280)
+
+[node name="GuardFacilitySouth" parent="guards" unique_id=648150389 instance=ExtResource("4_hfwtw")]
+position = Vector2(1300, 750)
+patrol_points = PackedVector2Array(0, 0, 350, 0)
+
+[node name="GuardFacilityNorth" parent="guards" unique_id=1611683155 instance=ExtResource("4_hfwtw")]
+position = Vector2(1600, 300)
+patrol_points = PackedVector2Array(0, 0, 0, 400)
+
+[node name="Exit" type="Area2D" parent="." unique_id=1039787074]
+position = Vector2(1700, 500)
+script = ExtResource("5_2mu0v")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exit" unique_id=2064681153]
+shape = SubResource("RectangleShape2D_eaa0b")
+
+[node name="Visual" type="Polygon2D" parent="Exit" unique_id=2070907365]
+color = Color(0.18, 0.7, 0.4, 0.55)
+polygon = PackedVector2Array(-30, -50, 30, -50, 30, 50, -30, 50)
+
+[node name="Label" type="Label" parent="Exit" unique_id=1963775298]
+offset_left = -70.0
+offset_top = -88.0
+offset_right = 70.0
+offset_bottom = -64.0
+theme_override_colors/font_color = Color(0.6, 1, 0.75, 1)
+text = "EXTRACCIÓN"
+horizontal_alignment = 1
+
+[node name="items" type="Node2D" parent="." unique_id=536023113]
+
+[node name="AmmoPickupInsertion" parent="items" unique_id=1458301726 instance=ExtResource("6_jmx14")]
+position = Vector2(300, 180)
+amount = 6
+
+[node name="AmmoPickupFacility" parent="items" unique_id=1162359050 instance=ExtResource("6_jmx14")]
+position = Vector2(1420, 680)
+amount = 6
+
+[node name="BottlesPickupCourtyard" parent="items" unique_id=1407415427 instance=ExtResource("6_jmx14")]
+position = Vector2(660, 500)
+kind = "bottles"
+amount = 2
+
+[node name="BottlesPickupFacility" parent="items" unique_id=265477871 instance=ExtResource("6_jmx14")]
+position = Vector2(1550, 250)
+kind = "bottles"
+amount = 2
+
+[node name="LootPickupInsertion" parent="items" unique_id=1347342266 instance=ExtResource("6_jmx14")]
+position = Vector2(280, 820)
+kind = "loot"
+
+[node name="LootPickupCourtyard" parent="items" unique_id=1638770359 instance=ExtResource("6_jmx14")]
+position = Vector2(880, 420)
+kind = "loot"
+
+[node name="LootPickupFacility" parent="items" unique_id=35584277 instance=ExtResource("6_jmx14")]
+position = Vector2(1680, 900)
+kind = "loot"
+
+[node name="HUD" parent="." unique_id=1181515147 instance=ExtResource("7_cyt5c")]

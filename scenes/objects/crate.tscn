@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[sub_resource type="RectangleShape2D" id="CrateShape"]
+size = Vector2(90, 70)
+
+[node name="Crate" type="StaticBody2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CrateShape")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.47, 0.31, 0.19, 1)
+polygon = PackedVector2Array(-45, -35, 45, -35, 45, 35, -45, 35)

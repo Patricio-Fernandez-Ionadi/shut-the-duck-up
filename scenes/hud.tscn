@@ -1,0 +1,201 @@
+[gd_scene format=3 uid="uid://bfsks7q0vfrxl"]
+
+[ext_resource type="Script" uid="uid://chyfryq5lcttl" path="res://scenes/scripts/hud.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer" unique_id=1181515147]
+script = ExtResource("1_hud")
+
+[node name="Root" type="Control" parent="." unique_id=2049048839]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopLeftBackdrop" type="ColorRect" parent="Root" unique_id=62049369]
+layout_mode = 1
+offset_right = 360.0
+offset_bottom = 200.0
+mouse_filter = 2
+color = Color(0.015, 0.025, 0.035, 0.62)
+
+[node name="TopLeft" type="VBoxContainer" parent="Root" unique_id=1157939304]
+layout_mode = 1
+offset_left = 18.0
+offset_top = 14.0
+offset_right = 620.0
+offset_bottom = 210.0
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="Title" type="Label" parent="Root/TopLeft" unique_id=1392124914]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "SHUT THE DUCK UP — PROTOTIPO"
+
+[node name="Objective" type="Label" parent="Root/TopLeft" unique_id=619441956]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.87, 0.92, 1)
+theme_override_font_sizes/font_size = 14
+text = "Objetivo: llegá a la salida verde y mantené F con el pato."
+autowrap_mode = 3
+
+[node name="Status" type="Label" parent="Root/TopLeft" unique_id=1513466621]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.45, 1)
+theme_override_font_sizes/font_size = 14
+text = "Llegá a la salida. E intentá que el pato no grazne."
+autowrap_mode = 3
+
+[node name="AgitationTitle" type="Label" parent="Root/TopLeft" unique_id=225350501]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "AGITACIÓN DEL PATO"
+
+[node name="AgitationBar" type="ProgressBar" parent="Root/TopLeft" unique_id=558765301]
+custom_minimum_size = Vector2(230, 14)
+layout_mode = 2
+size_flags_horizontal = 0
+value = 15.0
+show_percentage = false
+
+[node name="Mood" type="Label" parent="Root/TopLeft" unique_id=527600628]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Pato: calmado"
+
+[node name="AlertBanner" type="Label" parent="Root" unique_id=1896841515]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -260.0
+offset_top = 12.0
+offset_right = 260.0
+offset_bottom = 46.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
+theme_override_font_sizes/font_size = 22
+text = "ALERTA"
+horizontal_alignment = 1
+
+[node name="BottomRight" type="VBoxContainer" parent="Root" unique_id=2143175804]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -440.0
+offset_top = -92.0
+offset_right = -18.0
+offset_bottom = -14.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 2
+
+[node name="Ammo" type="Label" parent="Root/BottomRight" unique_id=79691036]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Munición: 6 / 6"
+horizontal_alignment = 2
+
+[node name="Bottles" type="Label" parent="Root/BottomRight" unique_id=2050450384]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Botellas: 3"
+horizontal_alignment = 2
+
+[node name="Controls" type="Label" parent="Root/BottomRight" unique_id=766686917]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "WASD mover · Shift correr · E calmar pato · clic derecho apuntar · clic izquierdo disparar"
+horizontal_alignment = 2
+
+[node name="Prompt" type="Label" parent="Root" unique_id=823177809]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -280.0
+offset_top = -64.0
+offset_right = 280.0
+offset_bottom = -34.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.75, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="Results" type="Control" parent="Root" unique_id=2097636720]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root/Results" unique_id=122338602]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.02, 0.04, 0.06, 0.82)
+
+[node name="Center" type="CenterContainer" parent="Root/Results" unique_id=1564833885]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Root/Results/Center" unique_id=1014806793]
+custom_minimum_size = Vector2(440, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Root/Results/Center/Panel" unique_id=1438228304]
+layout_mode = 2
+theme_override_constants/margin_left = 26
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 26
+theme_override_constants/margin_bottom = 22
+
+[node name="VBox" type="VBoxContainer" parent="Root/Results/Center/Panel/Margin" unique_id=872176031]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ResultsTitle" type="Label" parent="Root/Results/Center/Panel/Margin/VBox" unique_id=1316522130]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.9, 0.65, 1)
+theme_override_font_sizes/font_size = 26
+text = "MISIÓN COMPLETA"
+horizontal_alignment = 1
+
+[node name="ResultsDetails" type="Label" parent="Root/Results/Center/Panel/Margin/VBox" unique_id=157920]
+layout_mode = 2
+theme_override_constants/line_spacing = 4
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+
+[node name="ResultsHint" type="Label" parent="Root/Results/Center/Panel/Margin/VBox" unique_id=490166781]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "Pulsa R para volver a intentarlo."
+horizontal_alignment = 1

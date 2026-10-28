@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://c4gd52n3bbjao"]
+
+[ext_resource type="Script" uid="uid://dta4lhhanluab" path="res://scenes/scripts/player.gd" id="1_g2els"]
+[ext_resource type="PackedScene" uid="uid://cr4we2s7de1cr" path="res://scenes/entities/duck.tscn" id="2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 12.0
+
+[node name="Player" type="CharacterBody2D" unique_id=1825064578]
+script = ExtResource("1_g2els")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=813388432]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Duck" parent="." unique_id=1303150749 instance=ExtResource("2")]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1361848596]
+zoom = Vector2(1.5, 1.5)
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+limit_left = 0
+limit_top = 0
+limit_right = 1800
+limit_bottom = 1000
