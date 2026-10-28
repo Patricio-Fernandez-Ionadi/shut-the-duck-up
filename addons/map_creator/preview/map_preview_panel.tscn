@@ -41,7 +41,7 @@ text = "Map Creator"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.78, 0.88, 1)
 theme_override_font_sizes/font_size = 12
-text = "Rueda: zoom · Clic derecho: mover · F: ajustar vista"
+text = "Rueda: zoom · Clic derecho/central: mover · F: ajustar vista"
 autowrap_mode = 3
 
 [node name="SeparatorTop" type="HSeparator" parent="Margin/VBox"]
