@@ -2,10 +2,10 @@
 
 [ext_resource type="PackedScene" path="res://scenes/objects/wall.tscn" id="1_6xh4u"]
 [ext_resource type="PackedScene" path="res://scenes/objects/crate.tscn" id="2_cyt5c"]
-[ext_resource type="PackedScene" uid="uid://c4gd52n3bbjao" path="res://scenes/entities/player.tscn" id="3_7x1jh"]
+[ext_resource type="PackedScene" uid="uid://c4gd52n3bbjao" path="res://scenes/entities/player/player.tscn" id="3_7x1jh"]
 [ext_resource type="PackedScene" uid="uid://bp7ykn6mccedm" path="res://scenes/entities/guard.tscn" id="4_hfwtw"]
-[ext_resource type="Script" uid="uid://bqbhyrov37xfm" path="res://scenes/scripts/exit_zone.gd" id="5_2mu0v"]
-[ext_resource type="PackedScene" path="res://scenes/objects/pickup.tscn" id="6_jmx14"]
+[ext_resource type="Script" uid="uid://bqbhyrov37xfm" path="res://scenes/objects/exit_zone.gd" id="5_2mu0v"]
+[ext_resource type="PackedScene" uid="uid://48fk3716to2g" path="res://scenes/objects/pickup.tscn" id="6_jmx14"]
 [ext_resource type="PackedScene" uid="uid://bfsks7q0vfrxl" path="res://scenes/ui/hud.tscn" id="7_cyt5c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eaa0b"]

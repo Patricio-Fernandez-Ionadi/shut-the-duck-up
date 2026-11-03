@@ -13,7 +13,7 @@
 extends Node2D
 @export var levels: Array[PackedScene]
 
-@onready var player: PlayerCharacter = $LevelTutorial/Player
+@onready var player: PlayerWithGun = $LevelTutorial/Player
 @onready var duck: Duck = $LevelTutorial/Player/Duck
 @onready var hud: GameHUD = $LevelTutorial/HUD
 @onready var exit_area: ExitZone = $LevelTutorial/Exit

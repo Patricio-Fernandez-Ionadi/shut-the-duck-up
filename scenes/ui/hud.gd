@@ -1,3 +1,4 @@
+class_name GameHUD extends CanvasLayer
 # HUD: interfaz de la partida (CanvasLayer instanciado en main.tscn).
 #
 # RECIBE información de:
@@ -10,28 +11,43 @@
 #   * No escribe estado de juego: solo refleja datos en labels y barras.
 #   * Su panel de resultados se muestra al recibir mission_completed.
 
-extends CanvasLayer
-class_name GameHUD
-
-@onready var title_label: Label = $Root/TopLeft/Title
-@onready var objective_label: Label = $Root/TopLeft/Objective
-@onready var status_label: Label = $Root/TopLeft/Status
-@onready var agitation_bar: ProgressBar = $Root/TopLeft/AgitationBar
-@onready var mood_label: Label = $Root/TopLeft/Mood
-@onready var alert_banner: Label = $Root/AlertBanner
-@onready var ammo_label: Label = $Root/BottomRight/Ammo
-@onready var bottles_label: Label = $Root/BottomRight/Bottles
-@onready var controls_label: Label = $Root/BottomRight/Controls
+#region ─── Constructor ────────────────────────────────────────────────────────
+@onready var game_root: Control = $Root/IGame
 @onready var prompt_label: Label = $Root/Prompt
 @onready var crosshair: Crosshair = $Root/Crosshair
+
+# Duck
+@onready var agitation_bar: ProgressBar = %AgitationBar
+@onready var mood_label: Label = %Mood
+
+@onready var alert_banner: Label = $Root/IGame/AlertBanner
+
+# Objetive
+@onready var objetive_root: Control = $Root/IGame/Objetive
+@onready var objective_label: Label = %ObjectiveLabel
+@onready var status_label: Label = %ObjetiveStatus
+@onready var toggle_objetive_visibility: Button = %ToggleObjetiveVisibility
+const POS_X_OPENED := 22.0
+const POS_X_CLOSED := -545.0
+const DURATION := 0.3
+
+
+# Results
 @onready var results_root: Control = $Root/Results
 @onready var results_title: Label = $Root/Results/Center/Panel/Margin/VBox/ResultsTitle
 @onready var results_details: Label = $Root/Results/Center/Panel/Margin/VBox/ResultsDetails
 @onready var results_hint: Label = $Root/Results/Center/Panel/Margin/VBox/ResultsHint
 
-var player: PlayerCharacter = null
+# Keys Info
+@onready var ammo_label: Label = %Ammo
+@onready var bottles_label: Label = %Bottles
+@onready var controls_label: Label = %Controls
+
+#var player: PlayerCharacter = null
+var player: PlayerWithGun = null
 var duck: Duck = null
 var _status_timer := 0.0
+#endregion ─────────────────────────────────────────────────────────────────────
 
 func _ready() -> void:
 	# Estado inicial: paneles ocultos y suscripción a los eventos globales.
@@ -44,6 +60,8 @@ func _ready() -> void:
 		"WASD mover · Shift correr · Ctrl/C agacharse · E calmar · F derribar · "
 		+ "Q botella · RMB apuntar · LMB disparar · F3 debug"
 	)
+	
+	#objetive_root.position.x = -560
 
 	GameState.alarm_changed.connect(_on_alarm_changed)
 	GameState.mission_completed.connect(_on_mission_completed)
@@ -64,7 +82,7 @@ func _exit_tree() -> void:
 	):
 		player.shot_hit.disconnect(crosshair.flash_hit)
 
-func bind(player_ref: PlayerCharacter, duck_ref: Duck) -> void:
+func bind(player_ref: PlayerWithGun, duck_ref: Duck) -> void:
 	if (
 		is_instance_valid(crosshair)
 		and is_instance_valid(player)
@@ -86,7 +104,7 @@ func _process(delta: float) -> void:
 	_update_agitation()
 	_update_objective()
 	_update_status(delta)
-	set_ammo(player.ammo, player.reserve_ammo, player.is_reloading)
+	set_ammo(player.weapon.ammo, player.weapon.reserve_ammo, player.weapon.is_reloading)
 	set_bottles(player.bottles)
 
 	if GameState.alarm_active:
@@ -108,11 +126,11 @@ func set_ammo(current: int, reserve: int, reloading: bool = false) -> void:
 	if reloading:
 		ammo_label.text = "Munición: recargando… (%d reserva)" % reserve
 	else:
-		ammo_label.text = "Munición: %d / %d" % [current, reserve]
+		ammo_label.text = "%d / %d" % [current, reserve]
 
 func set_bottles(count: int) -> void:
 	bottles_label.visible = true
-	bottles_label.text = "Botellas: %d" % count
+	bottles_label.text = "%d" % count
 
 func _update_crosshair() -> void:
 	# El panel de resultados tapa la mira y devuelve el cursor del sistema.
@@ -121,9 +139,9 @@ func _update_crosshair() -> void:
 		return
 
 	crosshair.set_aiming(player.is_aiming)
-	crosshair.set_spread(player.aim_spread)
-	crosshair.set_target_hostile(player.aim_target_hostile)
-	crosshair.set_reloading(player.is_reloading)
+	crosshair.set_spread(player.weapon.aim_spread)
+	crosshair.set_target_hostile(player.weapon._last_target_hostile)
+	crosshair.set_reloading(player.weapon.is_reloading)
 
 func _update_status(delta: float) -> void:
 	# Un mensaje temporal (ruido/disparo) tapa el estado normal del jugador.
@@ -133,17 +151,22 @@ func _update_status(delta: float) -> void:
 		status_label.text = player.status_message
 
 func _update_agitation() -> void:
+	if GameState.is_complete(): return
+	
 	agitation_bar.value = duck.agitation
 
 	if duck.agitation < 35.0:
 		agitation_bar.modulate = Color("5ebc83")
 		mood_label.text = "Pato: calmado"
+		mood_label.modulate = Color("ffffff")
 	elif duck.agitation < 70.0:
 		agitation_bar.modulate = Color("e4b64f")
 		mood_label.text = "Pato: nervioso"
+		mood_label.modulate = Color("e4b64f")
 	else:
 		agitation_bar.modulate = Color("e45b5b")
 		mood_label.text = "Pato: alterado · va a graznar"
+		mood_label.modulate = Color("e45b5b")
 
 func _update_objective() -> void:
 	if GameState.is_complete():
@@ -164,6 +187,7 @@ func _on_alarm_changed(active: bool, _position: Vector2, time_left: float) -> vo
 func _on_mission_completed(results: Dictionary) -> void:
 	prompt_label.text = ""
 	crosshair.reset()
+	game_root.visible = false
 	results_root.visible = true
 	results_title.text = "MISIÓN COMPLETA"
 
@@ -202,3 +226,10 @@ func _on_run_reset() -> void:
 func _format_time(seconds: float) -> String:
 	var total := int(maxf(0.0, seconds))
 	return "%02d:%02d" % [total / 60, total % 60]
+
+func _on_toggle_objetive_visibility_toggled(toggled_on: bool) -> void:
+	toggle_objetive_visibility.text = "❌" if toggled_on else "👁"
+	var target_x := POS_X_CLOSED if !toggled_on else POS_X_OPENED
+	
+	create_tween().tween_property(objetive_root, "position:x", target_x, DURATION)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)

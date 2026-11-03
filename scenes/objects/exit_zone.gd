@@ -2,7 +2,7 @@
 #
 # RECIBE información de:
 #   * Mundo físico: señales body_entered/body_exited del jugador.
-#   * PlayerCharacter y Duck: posición del pato y su agitación.
+#   * PlayerWithGun y Duck: posición del pato y su agitación.
 #   * Grupo "guards": detecta si algún guardia sigue persiguiendo.
 #   * GameState: run_reset y mission_completed.
 #
@@ -20,7 +20,8 @@ signal prompt_changed(text: String)
 @export var max_duck_agitation: float = 70.0
 @export var duck_max_distance: float = 80.0
 
-var _player: PlayerCharacter = null
+#var _player: PlayerCharacter = null
+var _player: PlayerWithGun = null
 var _inside := false
 var _progress := 0.0
 var _last_prompt := ""
@@ -52,7 +53,7 @@ func _process(delta: float) -> void:
 		return
 
 	if _player == null or not is_instance_valid(_player):
-		_player = get_tree().get_first_node_in_group("player") as PlayerCharacter
+		_player = get_tree().get_first_node_in_group("player") as PlayerWithGun
 
 	if _player == null:
 		_progress = 0.0
@@ -110,8 +111,8 @@ func _is_guard_chasing() -> bool:
 	return false
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is PlayerCharacter:
-		_player = body as PlayerCharacter
+	if body is PlayerWithGun:
+		_player = body as PlayerWithGun
 		_inside = true
 
 func _on_body_exited(body: Node2D) -> void:

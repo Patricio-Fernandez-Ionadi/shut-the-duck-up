@@ -1,7 +1,12 @@
 [gd_scene format=3 uid="uid://bfsks7q0vfrxl"]
 
-[ext_resource type="Script" uid="uid://chyfryq5lcttl" path="res://scenes/scripts/hud.gd" id="1_hud"]
+[ext_resource type="Script" uid="uid://chyfryq5lcttl" path="res://scenes/ui/hud.gd" id="1_hud"]
+[ext_resource type="Texture2D" uid="uid://thh3y0pcy8oh" path="res://assets/ui/bullet.webp" id="2_8qguk"]
 [ext_resource type="PackedScene" path="res://scenes/ui/crosshair.tscn" id="2_crosshair"]
+[ext_resource type="Texture2D" uid="uid://o8ghuynnmi2" path="res://assets/ui/Molotov_Cocktail.webp" id="3_136eg"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ojnr2"]
+font_size = 24
 
 [node name="HUD" type="CanvasLayer" unique_id=1181515147]
 script = ExtResource("1_hud")
@@ -14,112 +19,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="TopLeftBackdrop" type="ColorRect" parent="Root" unique_id=62049369]
-layout_mode = 1
-offset_right = 360.0
-offset_bottom = 200.0
-mouse_filter = 2
-color = Color(0.015, 0.025, 0.035, 0.62)
-
-[node name="TopLeft" type="VBoxContainer" parent="Root" unique_id=1157939304]
-layout_mode = 1
-offset_left = 18.0
-offset_top = 14.0
-offset_right = 620.0
-offset_bottom = 210.0
-mouse_filter = 2
-theme_override_constants/separation = 3
-
-[node name="Title" type="Label" parent="Root/TopLeft" unique_id=1392124914]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
-text = "SHUT THE DUCK UP — PROTOTIPO"
-
-[node name="Objective" type="Label" parent="Root/TopLeft" unique_id=619441956]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.87, 0.92, 1)
-theme_override_font_sizes/font_size = 14
-text = "Objetivo: llegá a la salida verde y mantené F con el pato."
-autowrap_mode = 3
-
-[node name="Status" type="Label" parent="Root/TopLeft" unique_id=1513466621]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.78, 0.45, 1)
-theme_override_font_sizes/font_size = 14
-text = "Llegá a la salida. E intentá que el pato no grazne."
-autowrap_mode = 3
-
-[node name="AgitationTitle" type="Label" parent="Root/TopLeft" unique_id=225350501]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
-theme_override_font_sizes/font_size = 13
-text = "AGITACIÓN DEL PATO"
-
-[node name="AgitationBar" type="ProgressBar" parent="Root/TopLeft" unique_id=558765301]
-custom_minimum_size = Vector2(230, 14)
-layout_mode = 2
-size_flags_horizontal = 0
-value = 15.0
-show_percentage = false
-
-[node name="Mood" type="Label" parent="Root/TopLeft" unique_id=527600628]
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "Pato: calmado"
-
-[node name="AlertBanner" type="Label" parent="Root" unique_id=1896841515]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -260.0
-offset_top = 12.0
-offset_right = 260.0
-offset_bottom = 46.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
-theme_override_font_sizes/font_size = 22
-text = "ALERTA"
-horizontal_alignment = 1
-
-[node name="BottomRight" type="VBoxContainer" parent="Root" unique_id=2143175804]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -440.0
-offset_top = -92.0
-offset_right = -18.0
-offset_bottom = -14.0
-grow_horizontal = 0
-grow_vertical = 0
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 2
-
-[node name="Ammo" type="Label" parent="Root/BottomRight" unique_id=79691036]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Munición: 6 / 6"
-horizontal_alignment = 2
-
-[node name="Bottles" type="Label" parent="Root/BottomRight" unique_id=2050450384]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Botellas: 3"
-horizontal_alignment = 2
-
-[node name="Controls" type="Label" parent="Root/BottomRight" unique_id=766686917]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.75, 0.78, 0.8, 1)
-theme_override_font_sizes/font_size = 13
-text = "WASD mover · Shift correr · E calmar pato · clic derecho apuntar · clic izquierdo disparar"
-horizontal_alignment = 2
 
 [node name="Prompt" type="Label" parent="Root" unique_id=823177809]
 layout_mode = 1
@@ -138,11 +37,9 @@ theme_override_colors/font_color = Color(0.75, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 
-[node name="Crosshair" parent="Root" instance=ExtResource("2_crosshair")]
+[node name="Crosshair" parent="Root" unique_id=820025313 instance=ExtResource("2_crosshair")]
 layout_mode = 1
 anchors_preset = 0
-offset_right = 0.0
-offset_bottom = 0.0
 
 [node name="Results" type="Control" parent="Root" unique_id=2097636720]
 visible = false
@@ -206,3 +103,181 @@ theme_override_colors/font_color = Color(0.75, 0.78, 0.8, 1)
 theme_override_font_sizes/font_size = 14
 text = "Pulsa R para volver a intentarlo."
 horizontal_alignment = 1
+
+[node name="IGame" type="Control" parent="Root" unique_id=1987574322]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DuckState" type="VBoxContainer" parent="Root/IGame" unique_id=534678480]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 16.225
+anchor_bottom = 16.225
+offset_left = 8.0
+offset_top = -108.0
+offset_right = 608.0
+offset_bottom = -8.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+metadata/_edit_group_ = true
+
+[node name="Mood" type="Label" parent="Root/IGame/DuckState" unique_id=294377583]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 13
+text = "Pato: calmado"
+label_settings = SubResource("LabelSettings_ojnr2")
+
+[node name="AgitationTitle" type="Label" parent="Root/IGame/DuckState" unique_id=1645889142]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "AGITACIÓN DEL PATO"
+
+[node name="AgitationBar" type="ProgressBar" parent="Root/IGame/DuckState" unique_id=726227647]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 14)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+value = 15.0
+show_percentage = false
+
+[node name="AlertBanner" type="Label" parent="Root/IGame" unique_id=1896841515]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 296.0
+offset_top = 12.0
+offset_right = 816.0
+offset_bottom = 46.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
+theme_override_font_sizes/font_size = 22
+text = "ALERTA"
+horizontal_alignment = 1
+
+[node name="Objetive" type="Control" parent="Root/IGame" unique_id=1410136554]
+anchors_preset = 0
+offset_left = -545.0
+offset_top = 15.0
+offset_right = 55.0
+offset_bottom = 115.0
+
+[node name="TopLeftBackdrop" type="ColorRect" parent="Root/IGame/Objetive" unique_id=62049369]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_right = 544.0
+offset_bottom = 100.0
+offset_transform_position = Vector2(-1.565, 0)
+mouse_filter = 2
+color = Color(0.015, 0.025, 0.035, 0.62)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Root/IGame/Objetive" unique_id=575524436]
+custom_minimum_size = Vector2(600, 100)
+custom_maximum_size = Vector2(600, 100)
+layout_mode = 1
+offset_right = 600.0
+offset_bottom = 2067.0
+
+[node name="TopLeft" type="VBoxContainer" parent="Root/IGame/Objetive/HBoxContainer" unique_id=1157939304]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="ObjectiveLabel" type="Label" parent="Root/IGame/Objetive/HBoxContainer/TopLeft" unique_id=619441956]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.87, 0.92, 1)
+theme_override_font_sizes/font_size = 14
+text = "Objetivo: llegá a la salida verde y mantené F con el pato."
+autowrap_mode = 3
+
+[node name="ObjetiveStatus" type="Label" parent="Root/IGame/Objetive/HBoxContainer/TopLeft" unique_id=1513466621]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.45, 1)
+theme_override_font_sizes/font_size = 14
+text = "Llegá a la salida. E intentá que el pato no grazne."
+autowrap_mode = 3
+
+[node name="ToggleObjetiveVisibility" type="Button" parent="Root/IGame/Objetive/HBoxContainer" unique_id=746176952]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+toggle_mode = true
+text = "👁"
+
+[node name="ReferenceRect" type="ReferenceRect" parent="Root/IGame/Objetive" unique_id=1519736764]
+layout_mode = 0
+offset_right = 544.0
+offset_bottom = 100.0
+border_color = Color(0.5370821, 0.18855855, 0.07703712, 1)
+
+[node name="IGameKeysInfo" type="VBoxContainer" parent="Root/IGame" unique_id=2143175804]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 547.0
+offset_top = 453.0
+offset_right = 1094.0
+offset_bottom = 594.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Root/IGame/IGameKeysInfo" unique_id=1322562463]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="Ammo" type="Label" parent="Root/IGame/IGameKeysInfo/HBoxContainer" unique_id=79691036]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "6 / 6"
+horizontal_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="Root/IGame/IGameKeysInfo/HBoxContainer" unique_id=1902601264]
+custom_maximum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("2_8qguk")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Root/IGame/IGameKeysInfo" unique_id=1784323877]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="Bottles" type="Label" parent="Root/IGame/IGameKeysInfo/HBoxContainer2" unique_id=2050450384]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "3"
+horizontal_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="Root/IGame/IGameKeysInfo/HBoxContainer2" unique_id=981124853]
+custom_maximum_size = Vector2(50, 60)
+layout_mode = 2
+texture = ExtResource("3_136eg")
+
+[node name="Controls" type="Label" parent="Root/IGame/IGameKeysInfo" unique_id=766686917]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "WASD mover · Shift correr · E calmar pato · clic derecho apuntar · clic izquierdo disparar"
+horizontal_alignment = 2
+
+[connection signal="toggled" from="Root/IGame/Objetive/HBoxContainer/ToggleObjetiveVisibility" to="." method="_on_toggle_objetive_visibility_toggled"]

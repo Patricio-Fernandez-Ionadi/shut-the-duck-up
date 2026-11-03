@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bp7ykn6mccedm"]
 
-[ext_resource type="Script" uid="uid://4bq2pj4cvq3e" path="res://scenes/scripts/guard_enemy.gd" id="1_m4fl1"]
+[ext_resource type="Script" uid="uid://4bq2pj4cvq3e" path="res://scenes/entities/guard_enemy.gd" id="1_m4fl1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_guard"]
 radius = 12.0

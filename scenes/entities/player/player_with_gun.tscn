@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://enrsof4e7sgl"]
+
+[ext_resource type="Script" uid="uid://c8ckx4yjdlmn" path="res://scenes/entities/player/player_with_gun.gd" id="1_ji0nc"]
+[ext_resource type="Script" uid="uid://1swpaquyhrpp" path="res://lib/components/💠movement_top_down_2D.gd" id="2_luqqg"]
+[ext_resource type="Script" uid="uid://cdot2ok2vke38" path="res://lib/components/gun_cumponent.gd" id="3_hs7at"]
+[ext_resource type="PackedScene" uid="uid://cr4we2s7de1cr" path="res://scenes/entities/duck.tscn" id="4_luqqg"]
+[ext_resource type="Script" uid="uid://baktexsya1jop" path="res://lib/components/gun_aim_line.gd" id="5_hs7at"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hs7at"]
+radius = 12.0
+
+[node name="Player" type="CharacterBody2D" unique_id=68218407]
+script = ExtResource("1_ji0nc")
+walk_speed = 60.0
+sprint_speed = 150.0
+crouch_speed = 20.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=679770035]
+shape = SubResource("CircleShape2D_hs7at")
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1681512554]
+
+[node name="MovementTopDownComponent" type="Node" parent="." unique_id=1841573378]
+script = ExtResource("2_luqqg")
+action_left = &"move_left"
+action_right = &"move_right"
+action_up = &"move_up"
+action_down = &"move_down"
+metadata/_custom_type_script = "uid://1swpaquyhrpp"
+
+[node name="GunComponent" type="Node2D" parent="." unique_id=546529205]
+script = ExtResource("3_hs7at")
+metadata/_custom_type_script = "uid://cdot2ok2vke38"
+
+[node name="Duck" parent="." unique_id=1865764596 instance=ExtResource("4_luqqg")]
+
+[node name="AimLine" type="Line2D" parent="." unique_id=482614497]
+script = ExtResource("5_hs7at")
+metadata/_custom_type_script = "uid://baktexsya1jop"

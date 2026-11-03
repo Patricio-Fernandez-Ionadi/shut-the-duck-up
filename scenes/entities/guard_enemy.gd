@@ -1,3 +1,4 @@
+class_name GuardEnemy extends CharacterBody2D
 # GuardEnemy: guardia con detección progresiva y alarma compartida.
 #
 # RECIBE información de:
@@ -13,8 +14,6 @@
 #   * Su propio movimiento (move_and_slide) y dibujo (_draw) según el estado.
 #   * Al morir se elimina del árbol (queue_free), dejando de emitir/recibir ruido.
 
-extends CharacterBody2D
-class_name GuardEnemy
 
 # Estados de la máquina de comportamiento.
 enum GuardState { PATROL, SUSPICIOUS, INVESTIGATE, SEARCH, CHASE }

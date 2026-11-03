@@ -1,3 +1,4 @@
+class_name PlayerCharacter extends CharacterBody2D
 # PlayerCharacter: personaje controlado por el jugador.
 #
 # RECIBE información de:
@@ -14,11 +15,9 @@
 #   * GuardEnemy: le aplica el impacto con take_hit() cuando el rayo lo alcanza.
 #   * main.gd: expone status_message, que se muestra en el HUD.
 
-extends CharacterBody2D
-class_name PlayerCharacter
 
+#region ─── Constructor ────────────────────────────────────────────────────────
 signal shot_hit
-
 # --- Configuración ajustable desde el Inspector ---
 @export var walk_speed: float = 175.0
 @export var sprint_speed: float = 255.0
@@ -61,6 +60,7 @@ var aim_target_hostile := false        # True si la mira está sobre un guardia.
 # Feedback de apuntado: línea guía en el mundo.
 const AIM_LINE_COLOR := Color(0.55, 0.9, 1.0, 0.55)
 const BOTTLE_SCENE := preload("res://scenes/objects/bottle.tscn")
+#endregion ─────────────────────────────────────────────────────────────────────
 
 func _ready() -> void:
 	# Arranca con el cargador lleno y la reserva configurada.

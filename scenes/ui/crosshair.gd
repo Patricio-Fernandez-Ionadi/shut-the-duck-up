@@ -1,3 +1,4 @@
+class_name Crosshair extends Control
 # Crosshair: mira dibujada en pantalla dentro del CanvasLayer del HUD.
 #
 # RECIBE información de:
@@ -7,9 +8,7 @@
 # COMUNICA información a:
 #   * Solo se dibuja a sí misma; no modifica el estado de juego.
 
-extends Control
-class_name Crosshair
-
+#region Constructor
 const NEUTRAL_COLOR := Color("8ce6ff")
 const HOSTILE_COLOR := Color("e45b5b")
 const OUTLINE_COLOR := Color(0.02, 0.03, 0.04, 0.65)
@@ -29,6 +28,7 @@ var _spread := 0.0
 var _target_hostile := false
 var _reloading := false
 var _hit_flash := 0.0
+#endregion
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE

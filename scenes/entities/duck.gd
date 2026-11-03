@@ -1,3 +1,4 @@
+class_name Duck extends Node2D
 # Duck: pato que acompaña al jugador.
 #
 # RECIBE información de:
@@ -10,9 +11,6 @@
 #   * NoiseSystem (autoload): emite ruido al graznar y al ser calmado.
 #   * GameState: incrementa el contador de graznidos.
 #   * main.gd/HUD: expone agitation (barra y ánimo) y la señal agitation_changed.
-
-extends Node2D
-class_name Duck
 
 signal agitation_changed(value: float)
 

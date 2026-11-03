@@ -1,3 +1,4 @@
+class_name NoiseRipple extends Node2D
 # NoiseRipple: onda visual temporal para hacer legible el sistema de ruido.
 #
 # RECIBE información de:
@@ -8,14 +9,13 @@
 #   * Solo se dibuja a sí misma en el mundo y se elimina al terminar.
 #     No modifica el estado de juego.
 
-extends Node2D
-class_name NoiseRipple
-
-const DURATION := 0.75
+#region ─── Constructor ────────────────────────────────────────────────────────
+const DURATION := 0.75 # duracion de redibujados
+var _elapsed := 0.0 # tiempo transcurrido
 
 var max_radius := 100.0
 var ring_color := Color(1, 1, 1, 0.5)
-var _elapsed := 0.0
+#endregion ─────────────────────────────────────────────────────────────────────
 
 func _ready() -> void:
 	z_index = 5
