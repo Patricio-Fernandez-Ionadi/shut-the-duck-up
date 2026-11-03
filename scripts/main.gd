@@ -1,3 +1,4 @@
+extends Node2D
 # main.gd: orquestador del nivel.
 #
 # RECIBE información de:
@@ -10,9 +11,7 @@
 #   * HUD: enlaza jugador/pato, muestra avisos y el prompt de extracción.
 #   * Árbol de escena: registra al jugador en el grupo "player" para los guardias.
 
-extends Node2D
 @export var levels: Array[PackedScene]
-
 @onready var player: PlayerWithGun = $LevelTutorial/Player
 @onready var duck: Duck = $LevelTutorial/Player/Duck
 @onready var hud: GameHUD = $LevelTutorial/HUD

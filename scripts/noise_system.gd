@@ -20,7 +20,7 @@ signal noise_emitted(
 )
 
 const NOISE_RIPPLE_SCRIPT := preload(
-	"res://scenes/scripts/noise_ripple.gd"
+	"res://scripts/noise_ripple.gd"
 )
 
 func emit_noise(

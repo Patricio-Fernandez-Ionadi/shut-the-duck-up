@@ -19,6 +19,7 @@ crouch_speed = 20.0
 shape = SubResource("CircleShape2D_hs7at")
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1681512554]
+zoom = Vector2(2, 2)
 
 [node name="MovementTopDownComponent" type="Node" parent="." unique_id=1841573378]
 script = ExtResource("2_luqqg")
