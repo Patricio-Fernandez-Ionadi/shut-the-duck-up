@@ -38,8 +38,6 @@ func _input(event: InputEvent) -> void:
 
 func _open_menu() -> void:
 	_open = true
-	#Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	#close_button.grab_focus()
 	_toggle_animation()
 
 
