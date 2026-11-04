@@ -1,0 +1,68 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/components/objective_panel.gd" id="1_objective"]
+
+[node name="ObjectivePanel" type="Control" unique_id=1410136554]
+anchors_preset = 0
+offset_left = -545.0
+offset_top = 15.0
+offset_right = 55.0
+offset_bottom = 115.0
+script = ExtResource("1_objective")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1228426584]
+layout_mode = 0
+offset_left = -6.0
+offset_top = -1.0
+offset_right = 545.0
+offset_bottom = 101.0
+color = Color(1, 1, 1, 0.38039216)
+
+[node name="TopLeftBackdrop" type="ColorRect" parent="." unique_id=62049369]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_left = -5.0
+offset_right = 544.0
+offset_bottom = 100.0
+offset_transform_position = Vector2(-1.565, 0)
+mouse_filter = 2
+color = Color(0.015686275, 0.023529412, 0.03529412, 0.63529414)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=575524436]
+custom_minimum_size = Vector2(600, 100)
+custom_maximum_size = Vector2(600, 100)
+layout_mode = 1
+offset_right = 600.0
+offset_bottom = 2067.0
+
+[node name="TopLeft" type="VBoxContainer" parent="HBoxContainer" unique_id=1157939304]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="ObjectiveLabel" type="Label" parent="HBoxContainer/TopLeft" unique_id=619441956]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.87, 0.92, 1)
+theme_override_font_sizes/font_size = 14
+text = "Objetivo: llegá a la salida verde y mantené F con el pato."
+autowrap_mode = 3
+
+[node name="ObjetiveStatus" type="Label" parent="HBoxContainer/TopLeft" unique_id=1513466621]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.45, 1)
+theme_override_font_sizes/font_size = 14
+text = "Llegá a la salida. E intentá que el pato no grazne."
+autowrap_mode = 3
+
+[node name="ToggleObjetiveVisibility" type="Button" parent="HBoxContainer" unique_id=746176952]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+toggle_mode = true
+text = "👁"
+
+[connection signal="toggled" from="HBoxContainer/ToggleObjetiveVisibility" to="." method="_on_toggle_objetive_visibility_toggled"]

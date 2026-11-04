@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/components/duck_status.gd" id="1_duck"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ojnr2"]
+font_size = 24
+
+[node name="DuckStatus" type="VBoxContainer" unique_id=534678480]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 16.225
+anchor_bottom = 16.225
+offset_left = 8.0
+offset_top = -108.0
+offset_right = 608.0
+offset_bottom = -8.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+script = ExtResource("1_duck")
+
+[node name="Mood" type="Label" parent="." unique_id=294377583]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 13
+text = "Pato: calmado"
+label_settings = SubResource("LabelSettings_ojnr2")
+
+[node name="AgitationTitle" type="Label" parent="." unique_id=1645889142]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "AGITACIÓN DEL PATO"
+
+[node name="AgitationBar" type="ProgressBar" parent="." unique_id=726227647]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 14)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+value = 15.0
+show_percentage = false

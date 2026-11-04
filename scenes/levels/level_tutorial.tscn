@@ -54,3 +54,6 @@ patrol_points = PackedVector2Array(-80, 0, -80, 150, 0, 150, 0, 0)
 [node name="Player" parent="." unique_id=68218407 instance=ExtResource("9_pmeua")]
 y_sort_enabled = true
 position = Vector2(123, 165)
+walk_speed = 75.0
+sprint_speed = 110.0
+crouch_speed = 30.0

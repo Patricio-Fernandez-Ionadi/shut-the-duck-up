@@ -69,7 +69,6 @@ func _physics_process(delta: float) -> void:
 
 	# 4) Movimiento físico.
 	movement.apply_movement(input_direction, speed)
-	print(facing_direction, movement.facing)
 	# El cuerpo ejecuta el movimiento una sola vez.
 	move_and_slide()
 	

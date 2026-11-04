@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://wctbjcwy1e42"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ojnr2"]
-
-[node name="HitBoxComponent" type="CollisionShape2D" unique_id=692654745]
-shape = SubResource("RectangleShape2D_ojnr2")

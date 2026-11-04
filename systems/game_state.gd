@@ -63,9 +63,6 @@ func _reset_stats() -> void:
 		"noise_events": 0,
 	}
 
-func increment_stat(stat_name: String, amount: int = 1) -> void:
-	stats[stat_name] = int(stats.get(stat_name, 0)) + amount
-
 func is_playing() -> bool:
 	return state == RunState.PLAYING
 
@@ -95,6 +92,9 @@ func add_detection() -> void:
 #region ─── Quest / Results ────────────────────────────────────────────────────
 func is_complete() -> bool:
 	return state == RunState.COMPLETE
+
+func increment_stat(stat_name: String, amount: int = 1) -> void:
+	stats[stat_name] = int(stats.get(stat_name, 0)) + amount
 
 func complete_mission() -> void:
 	if state != RunState.PLAYING:

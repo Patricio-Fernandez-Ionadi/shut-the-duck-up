@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/components/player_resources.gd" id="1_resources"]
+[ext_resource type="Texture2D" uid="uid://thh3y0pcy8oh" path="res://assets/ui/bullet.webp" id="2_8qguk"]
+[ext_resource type="Texture2D" uid="uid://o8ghuynnmi2" path="res://assets/ui/Molotov_Cocktail.webp" id="3_136eg"]
+
+[node name="PlayerResources" type="VBoxContainer" unique_id=2143175804]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 547.0
+offset_top = 453.0
+offset_right = 1094.0
+offset_bottom = 594.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 2
+script = ExtResource("1_resources")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1322562463]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="Ammo" type="Label" parent="HBoxContainer" unique_id=79691036]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "6 / 6"
+horizontal_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer" unique_id=1902601264]
+custom_maximum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("2_8qguk")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=1784323877]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="Bottles" type="Label" parent="HBoxContainer2" unique_id=2050450384]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "3"
+horizontal_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer2" unique_id=981124853]
+custom_maximum_size = Vector2(50, 60)
+layout_mode = 2
+texture = ExtResource("3_136eg")
+
+[node name="Controls" type="Label" parent="." unique_id=766686917]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "WASD mover · Shift correr · E calmar pato · clic derecho apuntar · clic izquierdo disparar"
+horizontal_alignment = 2

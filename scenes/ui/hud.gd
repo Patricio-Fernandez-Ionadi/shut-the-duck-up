@@ -1,66 +1,37 @@
 class_name GameHUD extends CanvasLayer
-# HUD: interfaz de la partida (CanvasLayer instanciado en main.tscn).
+# HUD: composición de la interfaz de partida (CanvasLayer instanciado en main.tscn).
 #
 # RECIBE información de:
-#   * CharacterBody2D: status_message (texto de estado).
-#   * Duck: agitation (barra y ánimo).
+#   * Player: status_message, arma y botellas.
+#   * Duck: agitation.
 #   * GameState: alarma, misión completada y reinicio (señales).
 #   * Level/main.gd: bind() con las referencias y show_status() para mensajes.
 #
 # COMUNICA información a:
-#   * No escribe estado de juego: solo refleja datos en labels y barras.
-#   * Su panel de resultados se muestra al recibir mission_completed.
+#   * Componentes visuales (DuckStatus, ObjectivePanel, AlertBanner,
+#     PlayerResources, ResultsPanel): solo les pasa datos para mostrar.
 
 #region ─── Constructor ────────────────────────────────────────────────────────
 @onready var game_root: Control = $Root/IGame
 @onready var prompt_label: Label = $Root/Prompt
 @onready var crosshair: Crosshair = $Root/Crosshair
 
-# Duck
-@onready var agitation_bar: ProgressBar = %AgitationBar
-@onready var mood_label: Label = %Mood
-
-@onready var alert_banner: Label = $Root/IGame/AlertBanner
-
-# Objetive
-@onready var objetive_root: Control = $Root/IGame/Objetive
-@onready var objective_label: Label = %ObjectiveLabel
-@onready var status_label: Label = %ObjetiveStatus
-@onready var toggle_objetive_visibility: Button = %ToggleObjetiveVisibility
-const POS_X_OPENED := 22.0
-const POS_X_CLOSED := -545.0
-const DURATION := 0.6
-
-
-# Results
-@onready var results_root: Control = $Root/Results
-@onready var results_title: Label = $Root/Results/Center/Panel/Margin/VBox/ResultsTitle
-@onready var results_details: Label = $Root/Results/Center/Panel/Margin/VBox/ResultsDetails
-@onready var results_hint: Label = $Root/Results/Center/Panel/Margin/VBox/ResultsHint
-
-# Keys Info
-@onready var ammo_label: Label = %Ammo
-@onready var bottles_label: Label = %Bottles
-@onready var controls_label: Label = %Controls
+@onready var duck_status: DuckStatus = $Root/IGame/DuckStatus
+@onready var objective_panel: ObjectivePanel = $Root/IGame/ObjectivePanel
+@onready var alert_banner: AlertBanner = $Root/IGame/AlertBanner
+@onready var player_resources: PlayerResources = $Root/IGame/PlayerResources
+@onready var results_panel: ResultsPanel = $Root/Results
 
 var player: Player = null
 var duck: Duck = null
-var _status_timer := 0.0
 #endregion ─────────────────────────────────────────────────────────────────────
 
 func _ready() -> void:
-	# Estado inicial: paneles ocultos y suscripción a los eventos globales.
-	results_root.visible = false
-	alert_banner.visible = false
-	ammo_label.visible = false
-	bottles_label.visible = false
 	prompt_label.text = ""
-	controls_label.text = (
+	player_resources.set_controls(
 		"WASD mover · Shift correr · Ctrl/C agacharse · E calmar · F derribar · "
 		+ "Q botella · RMB apuntar · LMB disparar · F3 debug"
 	)
-	
-	#objetive_root.position.x = -560
 
 	GameState.alarm_changed.connect(_on_alarm_changed)
 	GameState.mission_completed.connect(_on_mission_completed)
@@ -95,41 +66,30 @@ func bind(player_ref: Player, duck_ref: Duck) -> void:
 	if player != null and not player.shot_hit.is_connected(crosshair.flash_hit):
 		player.shot_hit.connect(crosshair.flash_hit)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if player == null or duck == null:
 		return
 
 	_update_crosshair()
-	_update_agitation()
-	_update_objective()
-	_update_status(delta)
-	set_ammo(player.weapon.ammo, player.weapon.reserve_ammo, player.weapon.is_reloading)
-	set_bottles(player.bottles)
-
-	if GameState.alarm_active:
-		alert_banner.text = "ALERTA — te están buscando (%.0f s)" % GameState.alarm_time_left
+	duck_status.set_agitation(duck.agitation, GameState.is_complete())
+	objective_panel.set_state(GameState.is_complete(), Input.is_key_pressed(KEY_SHIFT))
+	objective_panel.set_default_status(player.status_message)
+	alert_banner.set_alarm(GameState.alarm_active, GameState.alarm_time_left)
+	player_resources.set_ammo(
+		player.weapon.ammo,
+		player.weapon.reserve_ammo,
+		player.weapon.is_reloading
+	)
+	player_resources.set_bottles(player.bottles)
 
 func show_status(text: String, duration: float = 2.2) -> void:
-	status_label.text = text
-	_status_timer = duration
+	objective_panel.show_status(text, duration)
 
 func show_prompt(text: String) -> void:
 	prompt_label.text = text
 
 func clear_prompt() -> void:
 	prompt_label.text = ""
-
-func set_ammo(current: int, reserve: int, reloading: bool = false) -> void:
-	ammo_label.visible = true
-
-	if reloading:
-		ammo_label.text = "Munición: recargando… (%d reserva)" % reserve
-	else:
-		ammo_label.text = "%d / %d" % [current, reserve]
-
-func set_bottles(count: int) -> void:
-	bottles_label.visible = true
-	bottles_label.text = "%d" % count
 
 func _update_crosshair() -> void:
 	# El panel de resultados tapa la mira y devuelve el cursor del sistema.
@@ -142,97 +102,18 @@ func _update_crosshair() -> void:
 	crosshair.set_target_hostile(player.weapon._last_target_hostile)
 	crosshair.set_reloading(player.weapon.is_reloading)
 
-func _update_status(delta: float) -> void:
-	# Un mensaje temporal (ruido/disparo) tapa el estado normal del jugador.
-	if _status_timer > 0.0:
-		_status_timer -= delta
-	else:
-		status_label.text = player.status_message
-
-func _update_agitation() -> void:
-	if GameState.is_complete(): return
-	
-	agitation_bar.value = duck.agitation
-
-	if duck.agitation < 35.0:
-		agitation_bar.modulate = Color("5ebc83")
-		mood_label.text = "Pato: calmado"
-		mood_label.modulate = Color("ffffff")
-	elif duck.agitation < 70.0:
-		agitation_bar.modulate = Color("e4b64f")
-		mood_label.text = "Pato: nervioso"
-		mood_label.modulate = Color("e4b64f")
-	else:
-		agitation_bar.modulate = Color("e45b5b")
-		mood_label.text = "Pato: alterado · va a graznar"
-		mood_label.modulate = Color("e45b5b")
-
-func _update_objective() -> void:
-	if GameState.is_complete():
-		objective_label.text = "¡MISIÓN CUMPLIDA! Pulsa R para reiniciar."
-	elif Input.is_key_pressed(KEY_SHIFT):
-		objective_label.text = "CORRER: más rápido, pero el pato se agita más."
-	else:
-		objective_label.text = (
-			"Objetivo: llegá a la salida verde y mantené F con el pato."
-		)
-
 func _on_alarm_changed(active: bool, _position: Vector2, time_left: float) -> void:
-	alert_banner.visible = active
-
-	if active:
-		alert_banner.text = "ALERTA — te están buscando (%.0f s)" % time_left
+	alert_banner.set_alarm(active, time_left)
 
 func _on_mission_completed(results: Dictionary) -> void:
 	prompt_label.text = ""
 	crosshair.reset()
 	game_root.visible = false
-	results_root.visible = true
-	results_title.text = "MISIÓN COMPLETA"
-
-	var lines: Array[String] = [
-		"Rango: %s — %s" % [
-			String(results.get("rank", "C")),
-			String(results.get("rank_title", "")),
-		],
-		"Tiempo: %s" % _format_time(float(results.get("time", 0.0))),
-		"Detecciones: %d" % int(results.get("detections", 0)),
-		"Bajas: %d · Derribos: %d" % [
-			int(results.get("kills", 0)),
-			int(results.get("takedowns", 0)),
-		],
-		"Disparos: %d · Botellas: %d" % [
-			int(results.get("gunshots", 0)),
-			int(results.get("bottles", 0)),
-		],
-		"Graznidos: %d · Ruidos: %d" % [
-			int(results.get("honks", 0)),
-			int(results.get("noise_events", 0)),
-		],
-		"Documentos: %d / 3" % int(results.get("loot", 0)),
-	]
-	results_details.text = "\n".join(lines)
-	results_hint.text = "Pulsa R para volver a intentarlo."
+	results_panel.show_results(results)
 
 func _on_run_reset() -> void:
-	results_root.visible = false
-	alert_banner.visible = false
+	results_panel.hide_results()
+	alert_banner.set_alarm(false, 0.0)
 	prompt_label.text = ""
 	crosshair.reset()
-	_status_timer = 0.0
-	status_label.text = ""
-
-func _format_time(seconds: float) -> String:
-	var total := int(maxf(0.0, seconds))
-	return "%02d:%02d" % [total / 60, total % 60]
-
-func _on_toggle_objetive_visibility_toggled(toggled_on: bool) -> void:
-	toggle_objetive_visibility.text = "❌" if toggled_on else "👁"
-	var target_x := POS_X_CLOSED if !toggled_on else POS_X_OPENED
-	
-	if toggled_on:
-		create_tween().tween_property(objetive_root, "position:x", target_x, DURATION)\
-		.set_trans(Tween.TRANS_BOUNCE)\
-		.set_ease(Tween.EASE_OUT)
-	else:
-		create_tween().tween_property(objetive_root, "position:x", target_x, DURATION/2)
+	objective_panel.reset()

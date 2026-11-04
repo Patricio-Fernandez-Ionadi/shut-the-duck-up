@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://enrsof4e7sgl"]
 
 [ext_resource type="Script" uid="uid://c8ckx4yjdlmn" path="res://scenes/entities/player/player.gd" id="1_ji0nc"]
-[ext_resource type="Script" uid="uid://1swpaquyhrpp" path="res://lib/components/💠movement_top_down_2D.gd" id="2_luqqg"]
-[ext_resource type="Script" uid="uid://cdot2ok2vke38" path="res://lib/components/gun_cumponent.gd" id="3_hs7at"]
+[ext_resource type="Script" uid="uid://1swpaquyhrpp" path="res://lib/💠movement_top_down_2D.gd" id="2_luqqg"]
+[ext_resource type="Script" uid="uid://cdot2ok2vke38" path="res://lib/gun_cumponent.gd" id="3_hs7at"]
 [ext_resource type="PackedScene" uid="uid://cr4we2s7de1cr" path="res://scenes/entities/duck.tscn" id="4_luqqg"]
-[ext_resource type="Script" uid="uid://baktexsya1jop" path="res://lib/components/gun_aim_line.gd" id="5_hs7at"]
+[ext_resource type="Script" uid="uid://baktexsya1jop" path="res://lib/gun_aim_line.gd" id="5_hs7at"]
 [ext_resource type="Texture2D" uid="uid://biq3ial12wgia" path="res://assets/player/idle/east.png" id="6_sixrk"]
 [ext_resource type="Texture2D" uid="uid://cvpc5xbrycko2" path="res://assets/player/run/east/frame_000.png" id="7_k80cw"]
 [ext_resource type="Texture2D" uid="uid://cqa62udrd44gs" path="res://assets/player/run/east/frame_001.png" id="8_mirqm"]
