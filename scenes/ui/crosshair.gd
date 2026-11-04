@@ -3,7 +3,7 @@ class_name Crosshair extends Control
 #
 # RECIBE información de:
 #   * GameHUD: sincroniza apuntado, apertura, objetivo hostil y recarga.
-#   * PlayerCharacter (señal shot_hit): flash breve de impacto.
+#   * CharacterBody2D (señal shot_hit): flash breve de impacto.
 #
 # COMUNICA información a:
 #   * Solo se dibuja a sí misma; no modifica el estado de juego.

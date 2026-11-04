@@ -2,7 +2,7 @@ class_name GameHUD extends CanvasLayer
 # HUD: interfaz de la partida (CanvasLayer instanciado en main.tscn).
 #
 # RECIBE información de:
-#   * PlayerCharacter: status_message (texto de estado).
+#   * CharacterBody2D: status_message (texto de estado).
 #   * Duck: agitation (barra y ánimo).
 #   * GameState: alarma, misión completada y reinicio (señales).
 #   * Level/main.gd: bind() con las referencias y show_status() para mensajes.
@@ -29,7 +29,7 @@ class_name GameHUD extends CanvasLayer
 @onready var toggle_objetive_visibility: Button = %ToggleObjetiveVisibility
 const POS_X_OPENED := 22.0
 const POS_X_CLOSED := -545.0
-const DURATION := 0.3
+const DURATION := 0.6
 
 
 # Results
@@ -43,8 +43,7 @@ const DURATION := 0.3
 @onready var bottles_label: Label = %Bottles
 @onready var controls_label: Label = %Controls
 
-#var player: PlayerCharacter = null
-var player: PlayerWithGun = null
+var player: Player = null
 var duck: Duck = null
 var _status_timer := 0.0
 #endregion ─────────────────────────────────────────────────────────────────────
@@ -82,7 +81,7 @@ func _exit_tree() -> void:
 	):
 		player.shot_hit.disconnect(crosshair.flash_hit)
 
-func bind(player_ref: PlayerWithGun, duck_ref: Duck) -> void:
+func bind(player_ref: Player, duck_ref: Duck) -> void:
 	if (
 		is_instance_valid(crosshair)
 		and is_instance_valid(player)
@@ -231,5 +230,9 @@ func _on_toggle_objetive_visibility_toggled(toggled_on: bool) -> void:
 	toggle_objetive_visibility.text = "❌" if toggled_on else "👁"
 	var target_x := POS_X_CLOSED if !toggled_on else POS_X_OPENED
 	
-	create_tween().tween_property(objetive_root, "position:x", target_x, DURATION)\
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	if toggled_on:
+		create_tween().tween_property(objetive_root, "position:x", target_x, DURATION)\
+		.set_trans(Tween.TRANS_BOUNCE)\
+		.set_ease(Tween.EASE_OUT)
+	else:
+		create_tween().tween_property(objetive_root, "position:x", target_x, DURATION/2)

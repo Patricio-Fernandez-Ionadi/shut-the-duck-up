@@ -4,9 +4,9 @@ class_name GuardEnemy extends CharacterBody2D
 # RECIBE información de:
 #   * NoiseSystem (autoload): señal noise_emitted (investiga el origen del ruido).
 #   * GameState: señal alarm_changed (converge a la última posición conocida).
-#   * Grupo "player": instancia de PlayerCharacter para verla y perseguirla.
+#   * Grupo "player": instancia de CharacterBody2D para verla y perseguirla.
 #   * Mundo físico: raycast de línea de visión (_can_see_player).
-#   * PlayerCharacter: llama a take_hit()/take_down() cuando lo elimina.
+#   * CharacterBody2D: llama a take_hit()/take_down() cuando lo elimina.
 #
 # COMUNICA información a:
 #   * GameState: add_detection() al iniciar una persecución y raise_alarm()
@@ -36,7 +36,7 @@ var awareness := 0.0  # 0-100; al llegar a 100 empieza la persecución.
 var patrol_origin: Vector2
 var patrol_target: Vector2
 var investigate_target: Vector2
-var player: PlayerCharacter = null
+var player: CharacterBody2D = null
 var alive := true
 
 var _look_direction := Vector2.LEFT
@@ -86,7 +86,7 @@ func _physics_process(delta: float) -> void:
 
 	# Obtiene al jugador por grupo si todavía no lo tiene.
 	if player == null:
-		player = get_tree().get_first_node_in_group("player") as PlayerCharacter
+		player = get_tree().get_first_node_in_group("player") as CharacterBody2D
 
 	var can_see := player != null and _can_see_player()
 	_update_awareness(delta, can_see)
@@ -348,11 +348,11 @@ func is_takedown_eligible(from_position: Vector2, max_range: float) -> bool:
 	return _look_direction.dot(to_player) < -0.25
 
 func take_hit() -> void:
-	# Comunicación entrante desde PlayerCharacter (disparo).
+	# Comunicación entrante desde CharacterBody2D (disparo).
 	_die("kills")
 
 func take_down() -> void:
-	# Comunicación entrante desde PlayerCharacter (derribo silencioso).
+	# Comunicación entrante desde CharacterBody2D (derribo silencioso).
 	_die("takedowns")
 
 func _die(stat_name: String) -> void:

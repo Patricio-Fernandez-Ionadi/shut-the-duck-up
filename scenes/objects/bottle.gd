@@ -1,7 +1,7 @@
 # DistractionBottle: botella arrojadiza que genera ruido al impactar.
 #
 # RECIBE información de:
-#   * PlayerCharacter: llama a throw_to(target) al lanzarla y le paga una carga.
+#   * CharacterBody2D: llama a throw_to(target) al lanzarla y le paga una carga.
 #   * Mundo físico: raycast para detenerse contra paredes/coberturas.
 #
 # COMUNICA información a:

@@ -1,15 +1,15 @@
 class_name AimLine extends Line2D
-# Línea guía del apuntado. Vive como nodo hijo del PlayerWithGun
+# Línea guía del apuntado. Vive como nodo hijo del Player
 # (o en cualquier parte: se ancla al player cada frame).
 
-@export var player: PlayerWithGun
+@export var player: CharacterBody2D
 
 const LINE_COLOR := Color(0.55, 0.9, 1.0, 0.55)
 
 
 func _ready() -> void:
 	if player == null:
-		player = get_parent() as PlayerWithGun
+		player = get_parent() as CharacterBody2D
 	width = 2.0
 	default_color = LINE_COLOR
 	visible = false

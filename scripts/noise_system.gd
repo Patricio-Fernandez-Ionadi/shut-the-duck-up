@@ -3,7 +3,7 @@ extends Node
 ## Bus central de ruido (autoload "NoiseSystem").
 ##
 ## RECIBE llamadas a emit_noise() de:
-##   * PlayerCharacter (disparos y pasos al correr).
+##   * CharacterBody2D (disparos y pasos al correr).
 ##   * Duck (graznidos y al ser calmado).
 ##   * Botellas u otras distracciones (kind = "distraction").
 ##

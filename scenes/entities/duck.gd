@@ -2,7 +2,7 @@ class_name Duck extends Node2D
 # Duck: pato que acompaña al jugador.
 #
 # RECIBE información de:
-#   * PlayerCharacter: escribe directamente en duck.agitation al correr y al
+#   * CharacterBody2D: escribe directamente en duck.agitation al correr y al
 #     disparar; llama a calm() con la tecla E y reposiciona el nodo cada frame.
 #   * Grupo "guards": detecta guardias persiguiendo cerca para asustarse.
 #   * Su propio temporizador: la agitación sube/baja con el tiempo y el estado.
@@ -35,11 +35,11 @@ var agitation: float = 15.0
 var _honk_timer: float = 4.0
 var _calm_cooldown_timer := 0.0
 var _pulse_time := 0.0
-var _player: PlayerCharacter = null
+var _player: Player = null
 var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
-	_player = get_parent() as PlayerCharacter
+	_player = get_parent() as Player
 	_rng.randomize()
 	_reset_honk_timer()
 	queue_redraw()
@@ -92,7 +92,7 @@ func _honk() -> void:
 	GameState.increment_stat("honks")
 
 func calm() -> bool:
-	# Llamado por PlayerCharacter ("E"). Devuelve false si está en cooldown.
+	# Llamado por CharacterBody2D ("E"). Devuelve false si está en cooldown.
 	if _calm_cooldown_timer > 0.0:
 		return false
 
@@ -124,48 +124,48 @@ func _reset_honk_timer() -> void:
 	)
 	_honk_timer = _rng.randf_range(min_interval, max_interval)
 
-func _draw() -> void:
-	# El color del pato refleja su ánimo.
-	var body_color := Color("f5d742")
-	if agitation >= ALTERED_MIN:
-		body_color = Color("e07a3a")
-	elif agitation >= CALM_MAX:
-		body_color = Color("e8b83a")
+#func _draw() -> void:
+	## El color del pato refleja su ánimo.
+	#var body_color := Color("f5d742")
+	#if agitation >= ALTERED_MIN:
+		#body_color = Color("e07a3a")
+	#elif agitation >= CALM_MAX:
+		#body_color = Color("e8b83a")
+#
+	## Aro de alerta cuando está alterado.
+	#if agitation >= ALTERED_MIN:
+		#var pulse := 0.55 + 0.25 * sin(_pulse_time * 6.0)
+		#draw_arc(
+			#Vector2.ZERO,
+			#15.0,
+			#0.0,
+			#TAU,
+			#24,
+			#Color(0.9, 0.3, 0.2, pulse),
+			#1.5
+		#)
+#
+	#draw_circle(Vector2.ZERO, 10.0, body_color)
+	#draw_circle(Vector2(3, -3), 2.0, Color("242424"))
+#
+	#draw_colored_polygon(
+		#PackedVector2Array([
+			#Vector2(8, 0),
+			#Vector2(16, 3),
+			#Vector2(8, 5),
+		#]),
+		#Color("ee8b32")
+	#)
 
-	# Aro de alerta cuando está alterado.
-	if agitation >= ALTERED_MIN:
-		var pulse := 0.55 + 0.25 * sin(_pulse_time * 6.0)
-		draw_arc(
-			Vector2.ZERO,
-			15.0,
-			0.0,
-			TAU,
-			24,
-			Color(0.9, 0.3, 0.2, pulse),
-			1.5
-		)
-
-	draw_circle(Vector2.ZERO, 10.0, body_color)
-	draw_circle(Vector2(3, -3), 2.0, Color("242424"))
-
-	draw_colored_polygon(
-		PackedVector2Array([
-			Vector2(8, 0),
-			Vector2(16, 3),
-			Vector2(8, 5),
-		]),
-		Color("ee8b32")
-	)
-
-	draw_line(
-		Vector2(-4, 9),
-		Vector2(-5, 13),
-		Color("ee8b32"),
-		2.0
-	)
-	draw_line(
-		Vector2(3, 9),
-		Vector2(4, 13),
-		Color("ee8b32"),
-		2.0
-	)
+	#draw_line(
+		#Vector2(-4, 9),
+		#Vector2(-5, 13),
+		#Color("ee8b32"),
+		#2.0
+	#)
+	#draw_line(
+		#Vector2(3, 9),
+		#Vector2(4, 13),
+		#Color("ee8b32"),
+		#2.0
+	#)

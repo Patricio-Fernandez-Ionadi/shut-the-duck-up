@@ -282,4 +282,17 @@ theme_override_font_sizes/font_size = 13
 text = "WASD mover · Shift correr · E calmar pato · clic derecho apuntar · clic izquierdo disparar"
 horizontal_alignment = 2
 
+[node name="Control" type="Control" parent="Root" unique_id=566674652]
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+
+[node name="Overlay" type="ColorRect" parent="Root/Control" unique_id=785818048]
+visible = false
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 0.5019608)
+
 [connection signal="toggled" from="Root/IGame/Objetive/HBoxContainer/ToggleObjetiveVisibility" to="." method="_on_toggle_objetive_visibility_toggled"]

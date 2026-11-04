@@ -4,7 +4,7 @@ extends Node
 # RECIBE información de:
 #   * Level/main.gd: inicio y reinicio de la misión, extracción completada.
 #   * GuardEnemy: detecciones y subida de alarma.
-#   * PlayerCharacter: disparos, derribos y bajas.
+#   * CharacterBody2D: disparos, derribos y bajas.
 #   * Duck y NoiseSystem: contadores de ruido/graznidos.
 #
 # COMUNICA información a:

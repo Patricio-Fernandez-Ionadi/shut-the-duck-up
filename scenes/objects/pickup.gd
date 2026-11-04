@@ -4,7 +4,7 @@
 #   * Mundo físico: señal body_entered cuando el jugador lo toca.
 #
 # COMUNICA información a:
-#   * PlayerCharacter: refill_ammo() o add_bottles().
+#   * CharacterBody2D: refill_ammo() o add_bottles().
 #   * GameState: incrementa el contador de loot al recoger un documento.
 #   * Se elimina del árbol al recogerse.
 
@@ -19,10 +19,10 @@ func _ready() -> void:
 	queue_redraw()
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is not PlayerCharacter:
+	if body is not CharacterBody2D:
 		return
 
-	var player := body as PlayerCharacter
+	var player := body as CharacterBody2D
 
 	match kind:
 		"ammo":

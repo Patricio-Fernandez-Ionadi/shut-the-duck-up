@@ -2,7 +2,7 @@ extends Node2D
 # main.gd: orquestador del nivel.
 #
 # RECIBE información de:
-#   * PlayerCharacter: instancia del jugador (posición/estado).
+#   * CharacterBody2D: instancia del jugador (posición/estado).
 #   * ExitZone: señal prompt_changed (progreso o bloqueo de la extracción).
 #   * NoiseSystem: señal noise_emitted (estadísticas y mensajes del HUD).
 #
@@ -12,7 +12,7 @@ extends Node2D
 #   * Árbol de escena: registra al jugador en el grupo "player" para los guardias.
 
 @export var levels: Array[PackedScene]
-@onready var player: PlayerWithGun = $LevelTutorial/Player
+@onready var player: Player = $LevelTutorial/Player
 @onready var duck: Duck = $LevelTutorial/Player/Duck
 @onready var hud: GameHUD = $LevelTutorial/HUD
 @onready var exit_area: ExitZone = $LevelTutorial/Exit
