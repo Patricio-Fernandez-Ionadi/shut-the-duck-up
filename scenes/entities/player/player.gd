@@ -13,11 +13,13 @@ signal shot_hit
 @export var footstep_noise_radius: float = 110.0
 @export var takedown_range: float = 42.0
 @export var throw_range: float = 380.0
+@export var shot_animation_hold: float = 0.15
 
 # --- Referencias a nodos hijos ---
 @onready var duck: Duck = $Duck
 @onready var weapon: GunComponent = $GunComponent
 @onready var movement: MovementTopDownComponent = $Movement
+@onready var animation: SpriteAnimationComponent = $Animation
 
 # --- Estado interno ---
 var facing_direction := Vector2.RIGHT
@@ -29,6 +31,7 @@ var status_message := "Llegá a la salida. E intentá que el pato no grazne."
 
 var _footstep_timer := 0.0
 var _cursor_hidden := false
+var _shot_animation_left := 0.0
 
 const BOTTLE_SCENE := preload("res://scenes/objects/bottle.tscn")
 #endregion ─────────────────────────────────────────────────────────────────────
@@ -71,12 +74,15 @@ func _physics_process(delta: float) -> void:
 	movement.apply_movement(input_direction, speed)
 	# El cuerpo ejecuta el movimiento una sola vez.
 	move_and_slide()
-	
-	# 5) Correr agita al pato..
+
+	# 5) Animación: mientras se apunta manda la mirada; si no, el input.
+	_update_animation(delta, is_moving)
+
+	# 6) Correr agita al pato.
 	if is_sprinting:
 		duck.agitation = minf(100.0, duck.agitation + 9.0 * delta)
 
-	# 6) Pasos audibles al correr.
+	# 7) Pasos audibles al correr.
 	if is_sprinting:
 		_footstep_timer -= delta
 		if _footstep_timer <= 0.0:
@@ -87,13 +93,13 @@ func _physics_process(delta: float) -> void:
 	else:
 		_footstep_timer = 0.0
 
-	# 7) El pato acompaña al jugador.
+	# 8) El pato acompaña al jugador.
 	#duck.global_position = global_position + Vector2(-18, 20)
 	duck.global_position = global_position
 
 	queue_redraw()
 
-	# 8) "E": calmar al pato.
+	# 9) "E": calmar al pato.
 	if Input.is_action_just_pressed("calm_duck"):
 		if duck.calm():
 			status_message = (
@@ -105,21 +111,38 @@ func _physics_process(delta: float) -> void:
 				"El pato todavía está agitado: esperá un momento."
 			)
 
-	# 8) Clic izquierdo: disparar (delegado al arma).
-	#if Input.is_action_just_pressed("shot"):
-		#weapon.try_fire(global_position, get_global_mouse_position())
-
-	# 9) "F": derribo silencioso.
+	# 10) "F": derribo silencioso.
 	if Input.is_action_just_pressed("interact"):
 		_try_takedown()
 
-	# 10) "Q": lanzar botella.
+	# 11) "Q": lanzar botella.
 	if Input.is_action_just_pressed("throw_item"):
 		_throw_bottle()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("shot"):
-		weapon.try_fire(global_position, get_global_mouse_position())
+		var target := get_global_mouse_position()
+		var to_target := target - global_position
+
+		# El disparo va al mouse; la mirada acompaña aunque no se esté
+		# apuntando para que la animación coincida con el proyectil.
+		if to_target.length_squared() > 1.0:
+			facing_direction = to_target.normalized()
+
+		weapon.try_fire(global_position, target)
+
+func _update_animation(delta: float, is_moving: bool) -> void:
+	_shot_animation_left = maxf(0.0, _shot_animation_left - delta)
+
+	# El disparo tiene prioridad y se mantiene un instante para que se vea
+	# aunque el arma permita volver a disparar enseguida.
+	var state: StringName = &"run" if is_moving else &"idle"
+	if _shot_animation_left > 0.0:
+		state = &"shot"
+
+	# Se usa facing_direction y no movement.facing porque el apuntado manda:
+	# correr hacia atrás mientras se apunta debe mirar al cursor.
+	animation.play_directional(state, facing_direction)
 
 func _update_aim_feedback() -> void:
 	# Oculta el cursor del sistema mientras la mira lo reemplaza.
@@ -144,6 +167,7 @@ func _on_weapon_hit_target(_collider: Object) -> void:
 
 
 func _on_weapon_fired() -> void:
+	_shot_animation_left = shot_animation_hold
 	duck.agitation = minf(100.0, duck.agitation + 20.0)
 	status_message = (
 		"¡Disparaste! El ruido puede atraer "

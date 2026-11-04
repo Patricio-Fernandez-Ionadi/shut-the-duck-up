@@ -1,5 +1,5 @@
 class_name GunComponent extends Node2D
-# Componente reutilizable de arma.
+# ─── Componente reutilizable de arma ──────────────────────────────────────────
 #
 # No conoce al jugador ni al mouse: recibe "from" y "target" en coordenadas
 # globales. Reutilizable en NPCs, torretas, jefes, etc.
@@ -15,7 +15,9 @@ class_name GunComponent extends Node2D
 #   * target_status_changed → crosshair (hostil apuntado).
 #   * NoiseSystem       → ruido del disparo.
 #   * GuardEnemy.take_hit() → impacto.
+# ──────────────────────────────────────────────────────────────────────────────
 
+#region ─── Constructor ────────────────────────────────────────────────────────
 signal fired()
 signal hit_target(collider: Object)
 signal ammo_changed(ammo: int, reserve: int)
@@ -44,21 +46,19 @@ var aim_spread: float = 0.0
 var _shot_cooldown_left: float = 0.0         # Segundos restantes antes de poder disparar.
 var _reload_timer: float = 0.0               # Tiempo restante de recarga.
 var _last_target_hostile: bool = false
-
+#endregion ─────────────────────────────────────────────────────────────────────
 
 func _ready() -> void:
 	ammo = magazine_size
 	reserve_ammo = starting_reserve_ammo
 	ammo_changed.emit(ammo, reserve_ammo)
 
-
 func _physics_process(delta: float) -> void:
 	_shot_cooldown_left = maxf(0.0, _shot_cooldown_left - delta)
 	_update_reload(delta)
 	_recover_spread(delta)
 
-
-#region ─── Disparo ───────────────────────────────────────────────────────────
+#region ─── Disparo ────────────────────────────────────────────────────────────
 func try_fire(from: Vector2, target: Vector2) -> bool:
 	# Devuelve true si el disparo se consumió (ammo > 0, sin cooldown).
 	# Devuelve false si no se pudo disparar (recargando, cooldown, sin ammo).
@@ -110,7 +110,6 @@ func try_fire(from: Vector2, target: Vector2) -> bool:
 
 	return true
 
-
 func update_aim_target(from: Vector2, target: Vector2) -> void:
 	# Raycast "seco" para feedback de apuntado. Sin efectos secundarios.
 	var to_target := target - from
@@ -131,23 +130,19 @@ func update_aim_target(from: Vector2, target: Vector2) -> void:
 		_last_target_hostile = hostile
 		target_status_changed.emit(hostile)
 
-
 func clear_aim_target() -> void:
 	if _last_target_hostile:
 		_last_target_hostile = false
 		target_status_changed.emit(false)
 
-
 func get_spread_ratio() -> float:
 	return clampf(aim_spread / maxf(0.001, max_aim_spread), 0.0, 1.0)
-
 
 func can_fire() -> bool:
 	return not is_reloading and _shot_cooldown_left <= 0.0 and ammo > 0
 #endregion ─────────────────────────────────────────────────────────────────────
 
-
-#region ─── Recarga ──────────────────────────────────────────────────────────
+#region ─── Recarga ────────────────────────────────────────────────────────────
 func start_reload() -> void:
 	if is_reloading or ammo >= magazine_size or reserve_ammo <= 0:
 		return
@@ -155,14 +150,12 @@ func start_reload() -> void:
 	_reload_timer = reload_time
 	reload_started.emit()
 
-
 func _update_reload(delta: float) -> void:
 	if not is_reloading:
 		return
 	_reload_timer -= delta
 	if _reload_timer <= 0.0:
 		_finish_reload()
-
 
 func _finish_reload() -> void:
 	var needed := magazine_size - ammo
@@ -173,14 +166,12 @@ func _finish_reload() -> void:
 	ammo_changed.emit(ammo, reserve_ammo)
 	reload_finished.emit()
 
-
 func refill(amount: int) -> void:
 	reserve_ammo += maxi(0, amount)
 	ammo_changed.emit(ammo, reserve_ammo)
 #endregion ─────────────────────────────────────────────────────────────────────
 
-
-#region ─── Internos ─────────────────────────────────────────────────────────
+#region ─── Internos ───────────────────────────────────────────────────────────
 func _recover_spread(delta: float) -> void:
 	if aim_spread <= 0.0:
 		return
@@ -189,12 +180,10 @@ func _recover_spread(delta: float) -> void:
 	if aim_spread != prev:
 		spread_changed.emit(get_spread_ratio())
 
-
 func _raycast(from: Vector2, to: Vector2) -> Dictionary:
 	var query := PhysicsRayQueryParameters2D.create(from, to)
 	query.exclude = _excluded_rids()
 	return get_world_2d().direct_space_state.intersect_ray(query)
-
 
 func _excluded_rids() -> Array[RID]:
 	# Excluye al dueño del arma (el padre, si es un cuerpo físico).
