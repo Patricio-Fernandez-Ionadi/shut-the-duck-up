@@ -1,8 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bidscqtjgtecm"]
 
-[ext_resource type="Script" path="res://scenes/ui/components/objective_panel.gd" id="1_objective"]
+[ext_resource type="Script" uid="uid://c3ccl43mvxpox" path="res://scenes/ui/components/objective_panel.gd" id="1_objective"]
 
 [node name="ObjectivePanel" type="Control" unique_id=1410136554]
+layout_mode = 3
 anchors_preset = 0
 offset_left = -545.0
 offset_top = 15.0

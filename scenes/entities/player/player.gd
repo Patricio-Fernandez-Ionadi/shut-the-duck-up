@@ -250,8 +250,3 @@ func _throw_bottle() -> void:
 func _exit_tree() -> void:
 	if _cursor_hidden:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-func _draw() -> void:
-	# --- Indicador de mirada ---
-	#draw_line(Vector2.ZERO, facing_direction * 18.0, Color("f2f2f2"), 3.0)
-	pass

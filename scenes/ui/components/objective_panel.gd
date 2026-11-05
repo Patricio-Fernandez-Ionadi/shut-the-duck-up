@@ -1,6 +1,7 @@
 class_name ObjectivePanel extends Control
 # ObjectivePanel: objetivo actual, mensajes de estado y toggle del panel.
 
+#region ─── Constructor ────────────────────────────────────────────────────────
 @onready var objective_label: Label = %ObjectiveLabel
 @onready var status_label: Label = %ObjetiveStatus
 @onready var toggle_button: Button = %ToggleObjetiveVisibility
@@ -11,14 +12,13 @@ const DURATION := 0.6
 
 var _status_timer := 0.0
 var _default_status := ""
-
+#endregion ─────────────────────────────────────────────────────────────────────
 
 func _process(delta: float) -> void:
 	if _status_timer > 0.0:
 		_status_timer -= delta
 	else:
 		status_label.text = _default_status
-
 
 func set_state(complete: bool, shift_pressed: bool) -> void:
 	if complete:
@@ -30,21 +30,17 @@ func set_state(complete: bool, shift_pressed: bool) -> void:
 			"Objetivo: llegá a la salida verde y mantené F con el pato."
 		)
 
-
 func set_default_status(text: String) -> void:
 	_default_status = text
-
 
 func show_status(text: String, duration: float = 2.2) -> void:
 	status_label.text = text
 	_status_timer = duration
 
-
 func reset() -> void:
 	_status_timer = 0.0
 	_default_status = ""
 	status_label.text = ""
-
 
 func _on_toggle_objetive_visibility_toggled(toggled_on: bool) -> void:
 	toggle_button.text = "❌" if toggled_on else "👁"

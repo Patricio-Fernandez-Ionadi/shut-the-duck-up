@@ -2,6 +2,20 @@
 
 [ext_resource type="FontFile" uid="uid://b00vgwmkiw6c4" path="res://assets/fonts/Pangolin-Regular.ttf" id="1_5bq3o"]
 [ext_resource type="StyleBox" uid="uid://da064i76btsib" path="res://resources/ui/gui_hover_button.tres" id="2_8vfbr"]
+[ext_resource type="StyleBox" uid="uid://kiyyrr6elyrk" path="res://resources/ui/gui_pressed_button.tres" id="3_vce8t"]
+[ext_resource type="StyleBox" uid="uid://cqr1wjekx5nif" path="res://resources/ui/gui_button.tres" id="4_5bq3o"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8vfbr"]
+bg_color = Color(0.5007029, 0.3052598, 0.274254, 0.33333334)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5304696, 0.45088738, 0.08421325, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+shadow_color = Color(0.0885599, 0.0885599, 0.0885599, 0.7490196)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ithuh"]
 bg_color = Color(0.41085187, 0.3638899, 0.18433169, 0.24705882)
@@ -13,34 +27,6 @@ border_color = Color(0.6350681, 0.54040533, 0.10767352, 1)
 corner_radius_top_left = 5
 corner_radius_bottom_right = 5
 corner_detail = 1
-shadow_color = Color(0.0885599, 0.0885599, 0.0885599, 0.7490196)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cj320"]
-bg_color = Color(0.3647059, 0.3647059, 0.3647059, 0)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.6350681, 0.54040533, 0.10767352, 1)
-corner_radius_top_left = 5
-corner_radius_bottom_right = 5
-corner_detail = 1
-shadow_color = Color(0.0885599, 0.0885599, 0.0885599, 0.7490196)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vce8t"]
-bg_color = Color(0.27450982, 0.6392157, 0.3137255, 0.3529412)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.44705883, 0.7372549, 0.2627451, 1)
-corner_radius_top_left = 5
-corner_radius_bottom_right = 5
-corner_detail = 1
-expand_margin_left = 1.0
-expand_margin_top = 1.0
-expand_margin_right = 1.0
-expand_margin_bottom = 1.0
 shadow_color = Color(0.0885599, 0.0885599, 0.0885599, 0.7490196)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5bq3o"]
@@ -56,10 +42,12 @@ corner_radius_bottom_right = 100
 default_font = ExtResource("1_5bq3o")
 Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 Button/fonts/font = ExtResource("1_5bq3o")
+Button/styles/disabled = SubResource("StyleBoxFlat_8vfbr")
 Button/styles/focus = SubResource("StyleBoxFlat_ithuh")
 Button/styles/hover = ExtResource("2_8vfbr")
-Button/styles/normal = SubResource("StyleBoxFlat_cj320")
-Button/styles/pressed = SubResource("StyleBoxFlat_vce8t")
+Button/styles/hover_pressed = ExtResource("3_vce8t")
+Button/styles/normal = ExtResource("4_5bq3o")
+Button/styles/pressed = ExtResource("3_vce8t")
 Label/colors/font_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
 Label/fonts/font = ExtResource("1_5bq3o")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_5bq3o")

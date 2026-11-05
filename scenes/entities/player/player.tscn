@@ -570,6 +570,12 @@ shape = SubResource("CapsuleShape2D_r4dfn")
 [node name="Camera" type="Camera2D" parent="." unique_id=1681512554]
 zoom = Vector2(2, 2)
 
+[node name="Sprites" type="AnimatedSprite2D" parent="." unique_id=660490799]
+y_sort_enabled = true
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_ojnr2")
+animation = &"idle_right"
+
 [node name="Animation" type="Node" parent="." unique_id=1467098395]
 script = ExtResource("85_anim")
 sprite_path = NodePath("../Sprites")
@@ -584,19 +590,13 @@ metadata/_custom_type_script = "uid://dkgxd4x4cuyxu"
 script = ExtResource("2_luqqg")
 metadata/_custom_type_script = "uid://1swpaquyhrpp"
 
+[node name="Duck" parent="." unique_id=1865764596 instance=ExtResource("4_luqqg")]
+
 [node name="GunComponent" type="Node2D" parent="." unique_id=546529205]
 script = ExtResource("3_hs7at")
 metadata/_custom_type_script = "uid://cdot2ok2vke38"
-
-[node name="Duck" parent="." unique_id=1865764596 instance=ExtResource("4_luqqg")]
 
 [node name="AimLine" type="Line2D" parent="." unique_id=482614497]
 points = PackedVector2Array(0, 3)
 script = ExtResource("5_hs7at")
 metadata/_custom_type_script = "uid://baktexsya1jop"
-
-[node name="Sprites" type="AnimatedSprite2D" parent="." unique_id=660490799]
-y_sort_enabled = true
-scale = Vector2(0.5, 0.5)
-sprite_frames = SubResource("SpriteFrames_ojnr2")
-animation = &"idle_right"
