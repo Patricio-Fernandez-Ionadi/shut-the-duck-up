@@ -11,12 +11,13 @@ extends Node2D
 #   * HUD: enlaza jugador/pato, muestra avisos y el prompt de extracción.
 #   * Árbol de escena: registra al jugador en el grupo "player" para los guardias.
 
+#region ─── Constructor ────────────────────────────────────────────────────────
 @export var levels: Array[PackedScene]
 @onready var player: Player = $LevelTutorial/Player
 @onready var duck: Duck = $LevelTutorial/Player/Duck
 @onready var hud: GameHUD = $LevelTutorial/HUD
 @onready var exit_area: ExitZone = $LevelTutorial/Exit
-
+#endregion ─────────────────────────────────────────────────────────────────────
 
 func _ready() -> void:
 	# Estado limpio para cada carga del nivel.

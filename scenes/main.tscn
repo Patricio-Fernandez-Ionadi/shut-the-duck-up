@@ -2,12 +2,9 @@
 
 [ext_resource type="Script" uid="uid://c1ai301ovsok3" path="res://scripts/main.gd" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://c808u5qr70mr7" path="res://scenes/levels/level_tutorial.tscn" id="2_0wfyh"]
-[ext_resource type="PackedScene" path="res://scenes/ui/player_menu.tscn" id="3_menu"]
 
 [node name="Main" type="Node2D" unique_id=284923315]
 script = ExtResource("1_sugp2")
 levels = Array[PackedScene]([ExtResource("2_0wfyh")])
 
 [node name="LevelTutorial" parent="." unique_id=936400852 instance=ExtResource("2_0wfyh")]
-
-[node name="PlayerMenu" parent="." instance=ExtResource("3_menu")]

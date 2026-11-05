@@ -2,10 +2,7 @@
 
 [ext_resource type="Script" uid="uid://chyfryq5lcttl" path="res://scenes/ui/hud.gd" id="1_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/crosshair.tscn" id="2_crosshair"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/duck_status.tscn" id="3_duck"]
-[ext_resource type="PackedScene" uid="uid://bfv2h772x2v5d" path="res://scenes/ui/components/alert_banner.tscn" id="4_alert"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/objective_panel.tscn" id="5_objective"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/player_resources.tscn" id="6_resources"]
+[ext_resource type="PackedScene" uid="uid://dg6i75son7cth" path="res://scenes/ui/pui/ui_game_player.tscn" id="4_8qguk"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/results_panel.tscn" id="7_results"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1181515147]
@@ -43,24 +40,5 @@ anchors_preset = 0
 
 [node name="Results" parent="Root" unique_id=2097636720 instance=ExtResource("7_results")]
 
-[node name="IGame" type="Control" parent="Root" unique_id=1987574322]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="DuckStatus" parent="Root/IGame" unique_id=534678480 instance=ExtResource("3_duck")]
-
-[node name="AlertBanner" parent="Root/IGame" unique_id=1896841515 instance=ExtResource("4_alert")]
+[node name="IGame" parent="Root" unique_id=1420310120 instance=ExtResource("4_8qguk")]
 layout_mode = 0
-anchors_preset = 0
-anchor_left = 0.0
-anchor_right = 0.0
-offset_left = 339.0
-offset_top = 10.0
-offset_right = 859.0
-offset_bottom = 44.0
-grow_horizontal = 1
-
-[node name="ObjectivePanel" parent="Root/IGame" unique_id=1410136554 instance=ExtResource("5_objective")]
-
-[node name="PlayerResources" parent="Root/IGame" unique_id=2143175804 instance=ExtResource("6_resources")]

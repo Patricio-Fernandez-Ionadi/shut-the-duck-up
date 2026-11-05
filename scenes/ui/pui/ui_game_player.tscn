@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://dg6i75son7cth"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/duck_status.tscn" id="1_s2x5m"]
+[ext_resource type="PackedScene" uid="uid://bfv2h772x2v5d" path="res://scenes/ui/components/alert_banner.tscn" id="2_7y4ae"]
+[ext_resource type="PackedScene" uid="uid://bidscqtjgtecm" path="res://scenes/ui/components/objective_panel.tscn" id="3_fo2dd"]
+[ext_resource type="PackedScene" uid="uid://c2182g740707c" path="res://scenes/ui/components/player_resources.tscn" id="4_ig5e5"]
+[ext_resource type="PackedScene" uid="uid://qnybixiwon3m" path="res://scenes/ui/pui/player_menu.tscn" id="5_7y4ae"]
+
+[node name="IGame" type="Control" unique_id=1420310120]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 1
+
+[node name="DuckStatus" parent="." unique_id=534678480 instance=ExtResource("1_s2x5m")]
+layout_mode = 0
+anchors_preset = 0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = 9.0
+offset_top = 569.0
+offset_right = 264.0
+offset_bottom = 639.0
+grow_vertical = 1
+
+[node name="AlertBanner" parent="." unique_id=1896841515 instance=ExtResource("2_7y4ae")]
+layout_mode = 0
+offset_left = 339.0
+offset_top = 20.0
+offset_right = 859.0
+offset_bottom = 54.0
+
+[node name="ObjectivePanel" parent="." unique_id=1410136554 instance=ExtResource("3_fo2dd")]
+layout_mode = 0
+offset_left = -545.0
+offset_top = 20.0
+offset_right = 55.0
+offset_bottom = 120.0
+
+[node name="PlayerResources" parent="." unique_id=2143175804 instance=ExtResource("4_ig5e5")]
+layout_mode = 0
+offset_left = 909.0
+offset_top = 542.0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="PlayerMenu" parent="." unique_id=1221394238 instance=ExtResource("5_7y4ae")]

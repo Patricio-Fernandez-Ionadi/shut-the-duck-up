@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://qnybixiwon3m"]
 
-[ext_resource type="Script" uid="uid://byyle1oxmnofu" path="res://scenes/ui/player_menu.gd" id="1_menu"]
-[ext_resource type="Texture2D" uid="uid://c33xwqjdshl81" path="res://assets/ui/book.png" id="2_nfetk"]
-[ext_resource type="Theme" uid="uid://dsisb3w4hlgd7" path="res://resources/ui/gui_theme.tres" id="3_nfetk"]
+[ext_resource type="Script" uid="uid://byyle1oxmnofu" path="res://scenes/ui/pui/player_menu.gd" id="1_vjudx"]
+[ext_resource type="Texture2D" uid="uid://c33xwqjdshl81" path="res://assets/ui/book.png" id="2_iv2fw"]
+[ext_resource type="Theme" uid="uid://dsisb3w4hlgd7" path="res://resources/ui/gui_theme.tres" id="3_n7o4u"]
 
 [node name="PlayerMenu" type="CanvasLayer" unique_id=1221394238]
 process_mode = 3
 layer = 10
 offset = Vector2(6.655, 0)
 transform = Transform2D(1, 0, 0, 1, 6.655, 0)
-script = ExtResource("1_menu")
+script = ExtResource("1_vjudx")
 
 [node name="Root" type="Control" parent="." unique_id=776022473]
 layout_mode = 3
@@ -24,7 +24,7 @@ grow_vertical = 2
 [node name="Book" type="Sprite2D" parent="Root" unique_id=1209710411]
 position = Vector2(562.99994, 320.99997)
 scale = Vector2(0.5585264, 0.51267064)
-texture = ExtResource("2_nfetk")
+texture = ExtResource("2_iv2fw")
 
 [node name="Title" type="Label" parent="Root" unique_id=88585711]
 layout_mode = 0
@@ -32,7 +32,7 @@ offset_left = 214.0
 offset_top = 186.0
 offset_right = 534.0
 offset_bottom = 220.0
-theme = ExtResource("3_nfetk")
+theme = ExtResource("3_n7o4u")
 theme_override_font_sizes/font_size = 24
 text = "MENÚ"
 horizontal_alignment = 1
@@ -44,7 +44,7 @@ offset_left = 647.345
 offset_top = 15.0
 offset_right = 967.345
 offset_bottom = 73.0
-theme = ExtResource("3_nfetk")
+theme = ExtResource("3_n7o4u")
 
 [node name="Margin" type="MarginContainer" parent="Root/Panel" unique_id=14552908]
 layout_mode = 2
@@ -76,7 +76,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 30)
 custom_maximum_size = Vector2(110, 30)
 layout_mode = 2
-theme = ExtResource("3_nfetk")
+theme = ExtResource("3_n7o4u")
 text = "Cerrar (Tab)"
 
 [node name="RestartButton" type="Button" parent="Root/HBoxContainer" unique_id=1190440432]
@@ -84,7 +84,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 30)
 custom_maximum_size = Vector2(110, 30)
 layout_mode = 2
-theme = ExtResource("3_nfetk")
+theme = ExtResource("3_n7o4u")
 text = "Reiniciar"
 
 [node name="QuitButton" type="Button" parent="Root/HBoxContainer" unique_id=1359654840]
@@ -92,5 +92,5 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 30)
 custom_maximum_size = Vector2(110, 30)
 layout_mode = 2
-theme = ExtResource("3_nfetk")
+theme = ExtResource("3_n7o4u")
 text = "Salir"
